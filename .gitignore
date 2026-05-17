@@ -1,0 +1,16 @@
+# Build artefacts
+/dist/
+/bin/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Go
+*.test
+*.prof
+coverage.out
