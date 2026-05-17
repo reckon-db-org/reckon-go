@@ -22,6 +22,7 @@ func main() {
 	if err != nil { fmt.Println("dial:", err); return }
 	defer conn.Close()
 
+
 	call := func(name string, fn func(context.Context) (any, error)) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -35,15 +36,31 @@ func main() {
 		}
 	}
 
+	const storeID = "default_store"
 	hc := pb.NewHealthServiceClient(conn)
-	call("HealthService/Check", func(ctx context.Context) (any, error) {
+	call("HealthService/Check (default_store)", func(ctx context.Context) (any, error) {
+		return hc.Check(ctx, &pb.HealthCheckRequest{StoreId: storeID})
+	})
+	call("HealthService/Check (empty store_id)", func(ctx context.Context) (any, error) {
 		return hc.Check(ctx, &pb.HealthCheckRequest{})
 	})
 	call("HealthService/Health", func(ctx context.Context) (any, error) {
 		return hc.Health(ctx, &pb.HealthRequest{})
 	})
-	call("HealthService/GetServerInfo", func(ctx context.Context) (any, error) {
+	call("HealthService/GetServerInfo (default_store)", func(ctx context.Context) (any, error) {
+		return hc.GetServerInfo(ctx, &pb.GetServerInfoRequest{StoreId: storeID})
+	})
+	call("HealthService/GetServerInfo (empty)", func(ctx context.Context) (any, error) {
 		return hc.GetServerInfo(ctx, &pb.GetServerInfoRequest{})
+	})
+	call("HealthService/VerifyClusterConsistency", func(ctx context.Context) (any, error) {
+		return hc.VerifyClusterConsistency(ctx, &pb.ClusterCheckRequest{StoreId: storeID})
+	})
+	call("HealthService/VerifyMembershipConsensus", func(ctx context.Context) (any, error) {
+		return hc.VerifyMembershipConsensus(ctx, &pb.ClusterCheckRequest{StoreId: storeID})
+	})
+	call("HealthService/CheckRaftLogConsistency", func(ctx context.Context) (any, error) {
+		return hc.CheckRaftLogConsistency(ctx, &pb.ClusterCheckRequest{StoreId: storeID})
 	})
 
 	sc := pb.NewStoresServiceClient(conn)
