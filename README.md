@@ -14,14 +14,15 @@ stores, err := c.Stores().List(ctx)
 
 ## Status
 
-`v0.1.0` — scaffold. The top-level `Client` + transport are wired; per-service sub-clients are stubs and land incrementally.
+`v0.1.0` — the four primary services are wrapped. Five remain on the
+generated-stub path (use `c.Conn()` to drive them by hand).
 
 | Service | Wrapper status |
 |---|---|
-| `Stores` | 🚧 — first to land (validates the wrapper pattern) |
-| `Streams` | ⬜ |
-| `Subscriptions` | ⬜ |
-| `Snapshots` | ⬜ |
+| `Stores` | ✅ |
+| `Streams` | ✅ |
+| `Subscriptions` | ✅ |
+| `Snapshots` | ✅ |
 | `Schema` | ⬜ |
 | `Temporal` | ⬜ |
 | `Causation` | ⬜ |
