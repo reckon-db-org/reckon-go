@@ -35,16 +35,26 @@ wrappers for the four primary services: `Stores`, `Streams`,
 
 ### Notes
 
-- Stream subscriptions require a `$`-separated stream id (`category$id`).
-  reckon-db's `by_stream` filter rejects plain stream ids with
-  `{invalid_filter, invalid_stream}`. This is a gateway/storage
-  convention; the wrapper does not enforce it.
+- Stream ids follow `{prefix}-{uuidv7-without-dashes}`, e.g.
+  `users-018f6a7b8c9d4abc8901234567890abc`. The wrapper does not
+  enforce this; it's the project convention.
 - `Subscriptions.Lag` may return `Internal` for newly-created
-  subscriptions — known gateway-side issue, tracked separately.
+  subscriptions on `reckon-gateway < 0.4.6` — fixed in 0.4.6 /
+  reckon-db 2.3.2.
 - `Create` followed by `Subscribe` for the same name leaves the
   original `pid=undefined` registration in place (gateway's
   `save_subscription` treats the second call as `already_exists` and
   silently drops the new pid). Subscribe alone is the supported
   path for live delivery.
+
+### Corrected from earlier note
+
+An earlier revision of this CHANGELOG claimed `by_stream` required
+a `$`-separated stream id. That was a misdiagnosis: the gateway's
+`reckon_db_filters:by_stream/1` rejected non-`$` ids with
+`{invalid_filter, invalid_stream}`, which was an over-restrictive
+check the *filter* imposed, not a real stream-id format requirement.
+Fixed in reckon-db 2.3.2 / reckon-gateway 0.4.6 — plain
+`{prefix}-{uuidv7}` ids are now accepted everywhere.
 
 Compatible with `reckon-proto 0.2.x` / `reckon-gateway 0.4.x` / `reckon-db 2.3.x`.
