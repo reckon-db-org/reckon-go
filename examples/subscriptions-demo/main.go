@@ -28,10 +28,7 @@ func main() {
 	endpoint := flag.String("endpoint", "localhost:50051", "reckon-gateway gRPC endpoint")
 	store := flag.String("store", "default_store", "store id")
 	now := time.Now().UnixNano()
-	// reckon-db's `by_stream' filter requires a `$' separator in the
-	// stream id (`category$id'). Subscriptions over plain stream ids
-	// fail with {invalid_filter, invalid_stream}.
-	stream := flag.String("stream", fmt.Sprintf("subdemo$%d", now), "stream id")
+	stream := flag.String("stream", fmt.Sprintf("subdemo-%d", now), "stream id")
 	name := flag.String("name", fmt.Sprintf("sub-demo-%d", now), "subscription name")
 	flag.Parse()
 
@@ -102,13 +99,9 @@ loop:
 	fmt.Printf("=== lag after acks ===\n")
 	lag, err := subs.Lag(ctx, *name)
 	if err != nil {
-		// GetSubscriptionLag has a known server-side issue (returns
-		// Internal for newly-created subscriptions). Surface, don't
-		// fail the demo.
-		fmt.Printf("  (lag rpc errored: %v — skipping)\n", err)
-	} else {
-		fmt.Printf("  lag=%d checkpoint=%d latest=%d\n", lag.Lag, lag.CurrentCheckpoint, lag.LatestVersion)
+		log.Fatalf("lag: %v", err)
 	}
+	fmt.Printf("  lag=%d checkpoint=%d latest=%d\n", lag.Lag, lag.CurrentCheckpoint, lag.LatestVersion)
 
 	fmt.Printf("=== list subscriptions (count only) ===\n")
 	all, err := subs.List(ctx)

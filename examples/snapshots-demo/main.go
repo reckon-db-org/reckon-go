@@ -51,12 +51,19 @@ func main() {
 		fmt.Printf("  saved v=%d\n", v)
 	}
 
-	fmt.Printf("=== read latest ===\n")
+	fmt.Printf("=== read latest (via List+At wrapper) ===\n")
 	latest, err := snaps.Latest(ctx, *source, *stream)
 	if err != nil {
 		log.Fatalf("latest: %v", err)
 	}
 	fmt.Printf("  v=%d data=%s\n", latest.Version, string(latest.Data))
+
+	fmt.Printf("=== read at v=0 (single-RPC latest, gateway 0.4.6+) ===\n")
+	v0, err := snaps.At(ctx, *source, *stream, 0)
+	if err != nil {
+		log.Fatalf("at v=0: %v", err)
+	}
+	fmt.Printf("  v=%d data=%s\n", v0.Version, string(v0.Data))
 
 	fmt.Printf("=== read at v=20 ===\n")
 	at, err := snaps.At(ctx, *source, *stream, 20)
