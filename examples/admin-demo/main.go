@@ -41,8 +41,16 @@ func main() {
 	must("ListLinks", err)
 	fmt.Printf("ListLinks         %d link(s)\n", len(links))
 
-	// Skip Scavenge / ScavengeDryRun in the smoke test — server-side
-	// hangs on nonexistent streams (separate gateway issue).
+	// Smoke check the no-snapshot fix from gateway 0.4.12: scavenge
+	// dry-run against a stream that doesn't exist must surface
+	// InvalidArgument fast, not time out the deadline.
+	dry, err := a.ScavengeDryRun(ctx, "nonexistent-deadbeef", nil)
+	if err == nil {
+		fmt.Printf("ScavengeDryRun    removed=%d remaining=%d reclaimed=%d (unexpected ok)\n",
+			dry.EventsRemoved, dry.EventsRemaining, dry.SpaceReclaimedBytes)
+		return
+	}
+	fmt.Printf("ScavengeDryRun    reject (fast): %v\n", err)
 }
 
 func must(label string, err error) {
