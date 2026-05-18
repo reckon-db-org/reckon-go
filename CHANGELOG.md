@@ -7,6 +7,38 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-18
+
+Wraps the remaining five gateway services to round out coverage.
+
+### Added
+
+- `health` package — `Check`, `Health`, `ClusterConsistency`,
+  `MembershipConsensus`, `RaftLogConsistency`, `MemoryLevel`,
+  `MemoryStats`, `ServerInfo`. Typed Status / ClusterStatus /
+  MemoryLevel enums.
+- `schema` package — `Register`, `Unregister`, `Get`, `List`,
+  `Version`, `Upcast`.
+- `temporal` package — `Until`, `Range`, `VersionAt`. Wall-clock
+  queries that return `streams.RecordedEvent` slices.
+- `causation` package — `Effects`, `Cause`, `Chain`, `Correlated`,
+  `Graph`. Walks event lineage by `causation_id` / `correlation_id`.
+- `admin` package — store/stream/event-type stats + scavenge
+  (real, dry-run, by pattern) + projection link lifecycle
+  (Create / Delete / Get / List / Start / Stop / Info).
+- Facades on `reckon.Client`: `Health(...)`, `Schema(...)`,
+  `Temporal(...)`, `Causation(...)`, `Admin(...)`.
+
+### Notes
+
+- All wrappers store-bound via `reckon.Client.<Service>(storeID)`;
+  one Client per store. `health.Client.Health(...)` is the only
+  exception — it returns the gateway-wide snapshot regardless of
+  binding.
+- `temporal` / `causation` / `schema.Upcast` re-use
+  `streams.RecordedEvent` rather than redefine it. Each package
+  defines its own private converters; no exported helper.
+
 ## [0.1.0] - 2026-05-17
 
 First tagged release. Top-level `reckon.Client` plus idiomatic Go
