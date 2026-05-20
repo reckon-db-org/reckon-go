@@ -7,6 +7,22 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-20
+
+### Added
+
+- Prebuilt-binary distribution so the `reckon` CLI installs without a Go
+  toolchain. `scripts/install.sh` (`curl | sh`) downloads the matching binary
+  from Codeberg releases, verifies SHA256, and installs to `~/.local/bin`
+  (`RECKON_VERSION`/`RECKON_BIN_DIR`/`RECKON_TOKEN` env). Binaries are built by
+  `scripts/build-release.sh` (5 platforms, stripped + version-stamped) and
+  published to Codeberg releases by `scripts/publish-codeberg.sh`, driven by
+  `.github/workflows/release.yml` on every `v*` tag (needs the GitHub secret
+  `CODEBERG_TOKEN`). Codeberg releases remain canonical; GitHub is only the
+  Actions runner. See `plans/DESIGN_RECKON_CLI.md` §7a.
+- `reckon --version` / `-V` prints `{client, api_compat}`; the client version
+  is stamped into release binaries at build time.
+
 ## [0.3.0] - 2026-05-20
 
 ### Fixed

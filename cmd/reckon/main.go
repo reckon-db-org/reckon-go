@@ -19,6 +19,10 @@ import (
 	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
 )
 
+// version is stamped at build time via -ldflags "-X main.version=<tag>"
+// (see scripts/build-release.sh). "dev" for plain `go build`/`go install`.
+var version = "dev"
+
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -27,11 +31,12 @@ func main() {
 
 // opts holds parsed global flags shared by every command.
 type opts struct {
-	endpoint string
-	store    string
-	timeout  time.Duration
-	bytes    encode.Bytes
-	pretty   bool
+	endpoint    string
+	store       string
+	timeout     time.Duration
+	bytes       encode.Bytes
+	pretty      bool
+	showVersion bool
 }
 
 // handler is one command leaf: it owns its command-flags (parsed from args),
@@ -43,6 +48,10 @@ func run(ctx context.Context, argv []string, in io.Reader, stdout, stderr io.Wri
 	o, rest, err := parseGlobal(argv)
 	if err != nil {
 		return emitErr(stderr, err)
+	}
+	if o.showVersion {
+		_ = writeJSON(stdout, map[string]any{"client": version, "api_compat": "reckon.gateway.v1"}, o.pretty)
+		return 0
 	}
 	if len(rest) < 2 {
 		return emitErr(stderr, usageErr("expected: reckon [flags] <group> <command> [args]"))
@@ -78,6 +87,8 @@ func parseGlobal(argv []string) (*opts, []string, error) {
 	timeout := fs.Duration("timeout", parseDur(def("RECKON_TIMEOUT", "5s")), "per-RPC deadline")
 	bytesFlag := fs.String("bytes", def("RECKON_BYTES", "auto"), "byte field rendering: auto|base64")
 	pretty := fs.Bool("pretty", false, "pretty-print unary JSON")
+	verLong := fs.Bool("version", false, "print client version and exit")
+	verShort := fs.Bool("V", false, "print client version and exit (alias)")
 
 	if err := fs.Parse(argv); err != nil {
 		return nil, nil, usageErr("flag error: %v", err)
@@ -88,11 +99,12 @@ func parseGlobal(argv []string) (*opts, []string, error) {
 		return nil, nil, usageErr("invalid --bytes %q (want auto|base64)", *bytesFlag)
 	}
 	o := &opts{
-		endpoint: pick(epShort, epLong),
-		store:    pick(stShort, stLong),
-		timeout:  *timeout,
-		bytes:    bm,
-		pretty:   *pretty,
+		endpoint:    pick(epShort, epLong),
+		store:       pick(stShort, stLong),
+		timeout:     *timeout,
+		bytes:       bm,
+		pretty:      *pretty,
+		showVersion: *verLong || *verShort,
 	}
 	return o, fs.Args(), nil
 }

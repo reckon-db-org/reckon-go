@@ -156,6 +156,22 @@ func TestRunUsageErrors(t *testing.T) {
 	}
 }
 
+func TestVersionFlag(t *testing.T) {
+	for _, flag := range []string{"--version", "-V"} {
+		var out, errOut bytes.Buffer
+		if code := run(context.Background(), []string{flag}, nil, &out, &errOut); code != 0 {
+			t.Fatalf("%s: exit %d, stderr=%s", flag, code, errOut.String())
+		}
+		var m map[string]any
+		if err := json.Unmarshal(out.Bytes(), &m); err != nil {
+			t.Fatalf("%s: output not JSON: %v\n%s", flag, err, out.String())
+		}
+		if _, ok := m["client"]; !ok {
+			t.Errorf("%s: missing client field: %v", flag, m)
+		}
+	}
+}
+
 func TestParseGlobalFlagsAndAliases(t *testing.T) {
 	o, rest, err := parseGlobal([]string{"-e", "h:1", "-s", "st", "--bytes", "base64", "streams", "read", "x"})
 	if err != nil {

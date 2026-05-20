@@ -30,6 +30,45 @@ catalogue-mode admin operations (`Admin.ReloadCatalogue`,
 | `Admin` | ✅ |
 | `Health` | ✅ |
 
+## `reckon` CLI
+
+A single static binary exposing the whole API as JSON-emitting subcommands
+(NDJSON for streams) — for shell/CI use and as the backend for editor
+integrations like reckon-nvim. See [`plans/DESIGN_RECKON_CLI.md`](plans/DESIGN_RECKON_CLI.md).
+
+**Install without a Go toolchain** (prebuilt binary from Codeberg releases).
+While the repo is private a Codeberg read token is required — for both
+fetching the script and downloading the asset:
+
+```bash
+export RECKON_TOKEN=<codeberg-access-token>
+curl -fsSL -H "Authorization: token $RECKON_TOKEN" \
+  https://codeberg.org/reckon-db-org/reckon-go/raw/branch/main/scripts/install.sh \
+  | RECKON_TOKEN="$RECKON_TOKEN" sh
+```
+
+Installs `reckon` into `~/.local/bin` (override with `RECKON_BIN_DIR`, pin a
+release with `RECKON_VERSION=vX.Y.Z`). Verifies the SHA256 before installing.
+Once the repo is public, both the token and the `-H` header become optional.
+
+**With Go:**
+
+```bash
+go env -w GOPRIVATE=codeberg.org/reckon-db-org
+git config --global url."git@codeberg.org:".insteadOf "https://codeberg.org/"
+go install codeberg.org/reckon-db-org/reckon-go/cmd/reckon@latest
+```
+
+```bash
+reckon --version
+reckon -e beam01.lab:50051 -s default_store streams read user-123 --count 10
+reckon -e beam01.lab:50051 -s default_store streams watch user-123   # NDJSON
+```
+
+Release binaries (`linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,
+`windows/amd64`) are built and published to Codeberg releases by
+`.github/workflows/release.yml` on every `v*` tag.
+
 ## Codegen
 
 Generated gRPC stubs live in `genproto/gatewayv1/`, written by [buf](https://buf.build) from the canonical proto bundle in [reckon-proto](https://codeberg.org/reckon-db-org/reckon-proto):

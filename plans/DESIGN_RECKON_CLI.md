@@ -382,6 +382,32 @@ Optimistic-concurrency conflicts on `append` surface as
 
 ---
 
+## 7a. Binary distribution (implemented)
+
+Prebuilt binaries let users install without a Go toolchain. Implemented:
+
+- `scripts/build-release.sh [version]` — cross-compiles `linux/{amd64,arm64}`,
+  `darwin/{amd64,arm64}`, `windows/amd64` into `dist/` as stripped
+  (`-s -w -trimpath`), version-stamped (`-X main.version`) static
+  (`CGO_ENABLED=0`) binaries named `reckon_<version>_<os>_<arch>[.exe]`, plus a
+  `SHA256SUMS` manifest. ~10–11 MB each.
+- `scripts/publish-codeberg.sh <version>` — creates/reuses the Codeberg release
+  for the tag and uploads every `dist/` asset (idempotent: replaces same-named
+  assets). Forgejo/Gitea API; needs `CODEBERG_TOKEN`.
+- `.github/workflows/release.yml` — on `v*` tag (mirror picks it up from
+  Codeberg), runs both scripts on the GitHub Actions runner fleet. **Codeberg
+  releases stay canonical**; GitHub is only the runner. Requires the GitHub
+  repo/org secret `CODEBERG_TOKEN` (repo-write scope).
+- `scripts/install.sh` — `curl … | sh` installer: detects OS/arch, resolves
+  `latest` (or `RECKON_VERSION`) via the Codeberg releases API, downloads the
+  asset + `SHA256SUMS`, verifies, installs to `RECKON_BIN_DIR`
+  (default `~/.local/bin`). **Private repo ⇒ `RECKON_TOKEN` required** for both
+  the API query and the asset download (sent as `Authorization: token`).
+
+Not yet built (future): distro packages (AUR `reckon-bin`, `.deb`/`.rpm` via
+nfpm), Homebrew tap, mason.nvim package. Each is a thin consumer of the same
+release assets.
+
 ## 7. Placement & distribution
 
 **Decision: in-repo, no separate `reckon-cli` repo, no separate Go module.**
