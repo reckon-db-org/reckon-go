@@ -404,21 +404,25 @@ Prebuilt binaries let users install without a Go toolchain. Implemented:
   (default `~/.local/bin`). **Private repo ⇒ `RECKON_TOKEN` required** for both
   the API query and the asset download (sent as `Authorization: token`).
 
-**Current reality (2026-05-20):** the GitHub Actions path is **not operational
-yet**, for two infra reasons outside this repo:
-1. The Codeberg→GitHub **push-mirror is failing auth** — its stored credential
-   (a fine-grained GitHub PAT) is not authorized for `reckon-db-org/reckon-go`
-   (`403 denied to rgfaber`), so tags never reach the GitHub mirror and the
-   workflow never triggers.
-2. Even a direct push of the workflow commit with a `workflow`-scoped classic
-   token is **rejected by an org-level policy** on `reckon-db-org` (PAT
-   workflow writes / SSO authorization).
+**Status (2026-05-20): operational, verified end-to-end.** Pushing a `v*` tag
+to Codeberg → push-mirror syncs it to GitHub → `release.yml` builds the 5
+binaries → `publish-codeberg.sh` uploads them to the Codeberg release. Proven
+by the v0.4.0 run.
 
-Until those are resolved, releases are cut with **`scripts/release-local.sh`**
-(`CODEBERG_TOKEN=… scripts/release-local.sh vX.Y.Z`) — build + publish straight
-to Codeberg from a workstation. The repo's **Releases unit must be enabled**
-(`has_releases=true`); it was off initially, which made every release API call
-return 404. v0.4.0 was published this way.
+Getting there required fixing three things (all now done):
+1. **Releases unit was disabled** on the repo (`has_releases=false`), so every
+   release API call 404'd. Enabled it.
+2. **Push-mirror credential** was a fine-grained GitHub PAT not authorized for
+   this repo (`403 denied to rgfaber`). Replaced with a `repo`+`workflow` token
+   authorized for `reckon-db-org`; mirror now syncs cleanly (incl. the
+   `.github/workflows` path).
+3. **`CODEBERG_TOKEN` Actions secret** was empty on the GitHub repo, so the
+   publish step failed `CODEBERG_TOKEN is required`. Set it to a Codeberg token
+   with repo-write scope.
+
+**`scripts/release-local.sh`** (`CODEBERG_TOKEN=… scripts/release-local.sh
+vX.Y.Z`) remains as a manual build+publish path (e.g. to re-publish or release
+without a tag push).
 
 Not yet built (future): distro packages (AUR `reckon-bin`, `.deb`/`.rpm` via
 nfpm), Homebrew tap, mason.nvim package. Each is a thin consumer of the same
