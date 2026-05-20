@@ -36,20 +36,17 @@ A single static binary exposing the whole API as JSON-emitting subcommands
 (NDJSON for streams) — for shell/CI use and as the backend for editor
 integrations like reckon-nvim. See [`plans/DESIGN_RECKON_CLI.md`](plans/DESIGN_RECKON_CLI.md).
 
-**Install without a Go toolchain** (prebuilt binary from Codeberg releases).
-While the repo is private a Codeberg read token is required — for both
-fetching the script and downloading the asset:
+**Install without a Go toolchain** (prebuilt binary from Codeberg releases):
 
 ```bash
-export RECKON_TOKEN=<codeberg-access-token>
-curl -fsSL -H "Authorization: token $RECKON_TOKEN" \
-  https://codeberg.org/reckon-db-org/reckon-go/raw/branch/main/scripts/install.sh \
-  | RECKON_TOKEN="$RECKON_TOKEN" sh
+curl -fsSL https://codeberg.org/reckon-db-org/reckon-go/raw/branch/main/scripts/install.sh | sh
 ```
 
 Installs `reckon` into `~/.local/bin` (override with `RECKON_BIN_DIR`, pin a
 release with `RECKON_VERSION=vX.Y.Z`). Verifies the SHA256 before installing.
-Once the repo is public, both the token and the `-H` header become optional.
+(If the repo is ever made private, set `RECKON_TOKEN` to a Codeberg read token —
+`install.sh` then sends it as an `Authorization` header for both the script
+fetch and the download.)
 
 **With Go:**
 

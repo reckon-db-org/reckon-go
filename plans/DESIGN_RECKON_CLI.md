@@ -404,6 +404,22 @@ Prebuilt binaries let users install without a Go toolchain. Implemented:
   (default `~/.local/bin`). **Private repo ⇒ `RECKON_TOKEN` required** for both
   the API query and the asset download (sent as `Authorization: token`).
 
+**Current reality (2026-05-20):** the GitHub Actions path is **not operational
+yet**, for two infra reasons outside this repo:
+1. The Codeberg→GitHub **push-mirror is failing auth** — its stored credential
+   (a fine-grained GitHub PAT) is not authorized for `reckon-db-org/reckon-go`
+   (`403 denied to rgfaber`), so tags never reach the GitHub mirror and the
+   workflow never triggers.
+2. Even a direct push of the workflow commit with a `workflow`-scoped classic
+   token is **rejected by an org-level policy** on `reckon-db-org` (PAT
+   workflow writes / SSO authorization).
+
+Until those are resolved, releases are cut with **`scripts/release-local.sh`**
+(`CODEBERG_TOKEN=… scripts/release-local.sh vX.Y.Z`) — build + publish straight
+to Codeberg from a workstation. The repo's **Releases unit must be enabled**
+(`has_releases=true`); it was off initially, which made every release API call
+return 404. v0.4.0 was published this way.
+
 Not yet built (future): distro packages (AUR `reckon-bin`, `.deb`/`.rpm` via
 nfpm), Homebrew tap, mason.nvim package. Each is a thin consumer of the same
 release assets.

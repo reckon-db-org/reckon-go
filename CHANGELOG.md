@@ -7,6 +7,18 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+### Added
+
+- `scripts/release-local.sh` — one-command manual release (build + publish to
+  Codeberg), the working release path while the GitHub Actions/mirror route is
+  blocked (see `plans/DESIGN_RECKON_CLI.md` §7a).
+
+### Fixed
+
+- README install instructions reflect that the repo is public (no token needed
+  for `install.sh`); the token path is documented only as a private-repo
+  fallback.
+
 ## [0.4.0] - 2026-05-20
 
 ### Added
