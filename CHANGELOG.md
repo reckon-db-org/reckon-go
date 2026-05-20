@@ -17,6 +17,13 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 - Stubs regenerated from reckon-proto v0.3.1 (`CatalogueClusterStatus`
   message renamed from `ClusterStatus` to avoid a namespace clash
   with the `enum ClusterStatus` in reckon_health.proto).
+- Unit tests for all 9 service packages (admin, causation, health,
+  schema, snapshots, stores, streams, subscriptions, temporal). Uses
+  `google.golang.org/grpc/test/bufconn` for an in-process gRPC server
+  so the tests exercise the real wire encode/decode + typed-result
+  translation without needing a live gateway. Covers happy paths,
+  RPC error propagation, enum/timestamp mapping, server-streaming
+  delivery, and nil-safety on optional proto fields.
 
 ## [0.2.0] - 2026-05-18
 
