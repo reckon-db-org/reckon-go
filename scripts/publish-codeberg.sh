@@ -21,8 +21,10 @@ need jq
 
 [ -d dist ] || { echo "dist/ not found — run build-release.sh first" >&2; exit 1; }
 
-# Reuse an existing release for this tag, else create one.
-id="$(curl -fsS -H "$AUTH" "$API/releases/tags/$VERSION" 2>/dev/null | jq -r '.id // empty')"
+# Reuse an existing release for this tag, else create one. No -f here: a
+# missing release returns 404 with a JSON body, which jq resolves to empty —
+# that is the expected "create it" path, not a script-aborting error.
+id="$(curl -sS -H "$AUTH" "$API/releases/tags/$VERSION" | jq -r '.id // empty')"
 if [ -z "$id" ]; then
   id="$(curl -fsS -H "$AUTH" -H "Content-Type: application/json" \
     -X POST "$API/releases" \
