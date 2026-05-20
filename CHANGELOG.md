@@ -7,6 +7,17 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+### Added
+
+- `admin.ReloadCatalogue(ctx)` and `admin.GetCatalogueStatus(ctx)`
+  wrap the two catalogue-mode RPCs introduced in reckon-gateway 0.5+
+  / reckon-proto 0.3.0 (rename-fixed in 0.3.1). Both are gateway-wide;
+  the bound store_id is ignored. Returns typed `CatalogueReloadResult`
+  / `CatalogueStatus` / `CatalogueClusterInfo` records.
+- Stubs regenerated from reckon-proto v0.3.1 (`CatalogueClusterStatus`
+  message renamed from `ClusterStatus` to avoid a namespace clash
+  with the `enum ClusterStatus` in reckon_health.proto).
+
 ## [0.2.0] - 2026-05-18
 
 Wraps the remaining five gateway services to round out coverage.

@@ -14,8 +14,9 @@ stores, err := c.Stores().List(ctx)
 
 ## Status
 
-`v0.1.0` — the four primary services are wrapped. Five remain on the
-generated-stub path (use `c.Conn()` to drive them by hand).
+All nine gateway services wrapped. Full RPC coverage including the
+catalogue-mode admin operations (`Admin.ReloadCatalogue`,
+`Admin.GetCatalogueStatus`).
 
 | Service | Wrapper status |
 |---|---|
@@ -23,11 +24,11 @@ generated-stub path (use `c.Conn()` to drive them by hand).
 | `Streams` | ✅ |
 | `Subscriptions` | ✅ |
 | `Snapshots` | ✅ |
-| `Schema` | ⬜ |
-| `Temporal` | ⬜ |
-| `Causation` | ⬜ |
-| `Admin` | ⬜ |
-| `Health` | ⬜ |
+| `Schema` | ✅ |
+| `Temporal` | ✅ |
+| `Causation` | ✅ |
+| `Admin` | ✅ |
+| `Health` | ✅ |
 
 ## Codegen
 
