@@ -2,6 +2,7 @@ package reckon
 
 import (
 	"context"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -16,6 +17,15 @@ type Client struct {
 // Connect dials the given gateway endpoint and returns a ready Client.
 // The endpoint is in `host:port` form (e.g. "beam01.lab:50051").
 //
+// A bare host:port target is dialed through the passthrough resolver, which
+// delegates name resolution to the dialer (honouring /etc/hosts and nsswitch)
+// and skips the default dns resolver's SRV/TXT service-config lookups. Those
+// lookups hang for several seconds — or indefinitely — on private TLDs such
+// as `*.lab`, whose nameservers don't answer the synthetic `_grpc_config.`
+// and `_grpclb._tcp.` queries. Callers needing client-side load balancing or
+// active re-resolution may pass an explicit scheme (e.g. "dns:///host:port")
+// to override.
+//
 // Currently uses insecure transport. TLS + capability-token auth are
 // follow-ups, tracked alongside the gateway's auth surface.
 func Connect(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Client, error) {
@@ -24,7 +34,11 @@ func Connect(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Cl
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
 	}
-	conn, err := grpc.NewClient(endpoint, opts...)
+	target := endpoint
+	if !strings.Contains(endpoint, "://") {
+		target = "passthrough:///" + endpoint
+	}
+	conn, err := grpc.NewClient(target, opts...)
 	if err != nil {
 		return nil, err
 	}
