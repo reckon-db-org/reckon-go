@@ -7,8 +7,32 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-20
+
+### Fixed
+
+- `Connect` now dials bare `host:port` targets through the `passthrough`
+  resolver instead of the default `dns` resolver. The dns resolver issues
+  synthetic `_grpc_config.<host>` (TXT) and `_grpclb._tcp.<host>` (SRV)
+  service-config lookups; on private TLDs whose nameservers don't answer
+  them (e.g. `*.lab`), the first RPC hangs until its deadline — every call
+  to a `.lab` gateway timed out with `DeadlineExceeded` despite the gateway
+  being healthy and TCP-reachable. Passthrough delegates resolution to the
+  dialer (honouring `/etc/hosts`/nsswitch). Pass an explicit scheme
+  (`dns:///host:port`) to opt back into the dns resolver / client-side LB.
+
 ### Added
 
+- `cmd/reckon`: a single static binary exposing the reckon-go API as
+  JSON-emitting subcommands (NDJSON for streams), for reckon-nvim and
+  shell/CI use. See `plans/DESIGN_RECKON_CLI.md`. The full surface is wired
+  across all groups — stores, streams, subs, snapshots, schema, temporal,
+  causation, admin (incl. links), health, catalogue (54 leaf commands).
+  Streaming commands (`stores watch`, `streams watch`, `subs consume`) emit
+  NDJSON frames; `subs consume` supports `--ack-mode auto|none|stdin` (stdin
+  acks for at-least-once UIs). Stdlib `flag` only — no third-party deps leak
+  into the module graph. Verified end-to-end against a live gateway cluster
+  (e2e tests behind the `e2e` build tag).
 - `admin.ReloadCatalogue(ctx)` and `admin.GetCatalogueStatus(ctx)`
   wrap the two catalogue-mode RPCs introduced in reckon-gateway 0.5+
   / reckon-proto 0.3.0 (rename-fixed in 0.3.1). Both are gateway-wide;
