@@ -284,3 +284,82 @@ func (c *Client) LinkInfo(ctx context.Context, name string, opts ...grpc.CallOpt
 		Details:         resp.GetDetails(),
 	}, nil
 }
+
+// ---- Catalogue (gateway-wide; store binding ignored) ---------------
+
+// CatalogueReloadResult is the diff returned by ReloadCatalogue.
+// When Error is non-empty, the live catalogue was NOT mutated.
+type CatalogueReloadResult struct {
+	Added     []string // cluster_ids newly connected since previous state
+	Removed   []string // cluster_ids retired (removed from clusters.eterm)
+	Restarted []string // cluster_ids whose connector was restarted
+	Error     string   // config-load failure message; empty on success
+}
+
+// CatalogueStatus is a snapshot of catalogue state for ops dashboards.
+type CatalogueStatus struct {
+	CatalogueSize   uint32                 // distinct store_ids across all clusters
+	GatewayUptimeMs int64                  // process uptime in milliseconds
+	Clusters        []CatalogueClusterInfo // per-connector status
+}
+
+// CatalogueClusterInfo describes one cluster connector's state.
+type CatalogueClusterInfo struct {
+	ClusterID   string    // operator-assigned label from clusters.eterm
+	Members     []string  // currently-connected Erlang dist members
+	StoreCount  uint32    // distinct store_ids visible from this cluster
+	Status      string    // "up" | "degraded" | "unreachable" | "not_yet_connected"
+	LastRefresh time.Time // zero when the connector has never reached the cluster
+	LastError   string    // empty when Status = "up"; NEVER carries the cookie
+}
+
+// ReloadCatalogue triggers the gateway to re-read clusters.eterm and
+// reconcile its connectors. Gateway-wide RPC; the Client's store
+// binding is ignored.
+func (c *Client) ReloadCatalogue(ctx context.Context, opts ...grpc.CallOption) (CatalogueReloadResult, error) {
+	resp, err := c.raw.ReloadCatalogue(ctx, &pb.ReloadCatalogueRequest{}, opts...)
+	if err != nil {
+		return CatalogueReloadResult{}, err
+	}
+	return CatalogueReloadResult{
+		Added:     resp.GetAdded(),
+		Removed:   resp.GetRemoved(),
+		Restarted: resp.GetRestarted(),
+		Error:     resp.GetError(),
+	}, nil
+}
+
+// GetCatalogueStatus returns a snapshot of the catalogue's current
+// state. Gateway-wide RPC; the Client's store binding is ignored.
+func (c *Client) GetCatalogueStatus(ctx context.Context, opts ...grpc.CallOption) (CatalogueStatus, error) {
+	resp, err := c.raw.GetCatalogueStatus(ctx, &pb.GetCatalogueStatusRequest{}, opts...)
+	if err != nil {
+		return CatalogueStatus{}, err
+	}
+	clusters := make([]CatalogueClusterInfo, len(resp.GetClusters()))
+	for i, cc := range resp.GetClusters() {
+		clusters[i] = catalogueClusterInfoFromProto(cc)
+	}
+	return CatalogueStatus{
+		CatalogueSize:   uint32(resp.GetCatalogueSize()),
+		GatewayUptimeMs: resp.GetGatewayUptimeMs(),
+		Clusters:        clusters,
+	}, nil
+}
+
+func catalogueClusterInfoFromProto(p *pb.CatalogueClusterStatus) CatalogueClusterInfo {
+	var lastRefresh time.Time
+	if s := p.GetLastRefresh(); s != "" {
+		if t, err := time.Parse(time.RFC3339, s); err == nil {
+			lastRefresh = t
+		}
+	}
+	return CatalogueClusterInfo{
+		ClusterID:   p.GetClusterId(),
+		Members:     p.GetMembers(),
+		StoreCount:  uint32(p.GetStoreCount()),
+		Status:      p.GetStatus(),
+		LastRefresh: lastRefresh,
+		LastError:   p.GetLastError(),
+	}
+}

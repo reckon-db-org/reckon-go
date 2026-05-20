@@ -1301,6 +1301,313 @@ func (x *LinkRuntimeInfo) GetDetails() map[string]string {
 	return nil
 }
 
+type ReloadCatalogueRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReloadCatalogueRequest) Reset() {
+	*x = ReloadCatalogueRequest{}
+	mi := &file_reckon_admin_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReloadCatalogueRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReloadCatalogueRequest) ProtoMessage() {}
+
+func (x *ReloadCatalogueRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_admin_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReloadCatalogueRequest.ProtoReflect.Descriptor instead.
+func (*ReloadCatalogueRequest) Descriptor() ([]byte, []int) {
+	return file_reckon_admin_proto_rawDescGZIP(), []int{24}
+}
+
+type ReloadCatalogueResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// cluster_ids newly connected since the previous catalogue state.
+	Added []string `protobuf:"bytes,1,rep,name=added,proto3" json:"added,omitempty"`
+	// cluster_ids retired (removed from clusters.eterm).
+	Removed []string `protobuf:"bytes,2,rep,name=removed,proto3" json:"removed,omitempty"`
+	// cluster_ids whose config (members or cookie) changed and whose
+	// connector was therefore terminated + restarted.
+	Restarted []string `protobuf:"bytes,3,rep,name=restarted,proto3" json:"restarted,omitempty"`
+	// Populated only on configuration-load failure (malformed eterm,
+	// duplicate cluster_id, missing required field). When non-empty,
+	// the live state was NOT mutated.
+	Error         string `protobuf:"bytes,4,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReloadCatalogueResponse) Reset() {
+	*x = ReloadCatalogueResponse{}
+	mi := &file_reckon_admin_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReloadCatalogueResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReloadCatalogueResponse) ProtoMessage() {}
+
+func (x *ReloadCatalogueResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_admin_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReloadCatalogueResponse.ProtoReflect.Descriptor instead.
+func (*ReloadCatalogueResponse) Descriptor() ([]byte, []int) {
+	return file_reckon_admin_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *ReloadCatalogueResponse) GetAdded() []string {
+	if x != nil {
+		return x.Added
+	}
+	return nil
+}
+
+func (x *ReloadCatalogueResponse) GetRemoved() []string {
+	if x != nil {
+		return x.Removed
+	}
+	return nil
+}
+
+func (x *ReloadCatalogueResponse) GetRestarted() []string {
+	if x != nil {
+		return x.Restarted
+	}
+	return nil
+}
+
+func (x *ReloadCatalogueResponse) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+type GetCatalogueStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCatalogueStatusRequest) Reset() {
+	*x = GetCatalogueStatusRequest{}
+	mi := &file_reckon_admin_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCatalogueStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCatalogueStatusRequest) ProtoMessage() {}
+
+func (x *GetCatalogueStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_admin_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCatalogueStatusRequest.ProtoReflect.Descriptor instead.
+func (*GetCatalogueStatusRequest) Descriptor() ([]byte, []int) {
+	return file_reckon_admin_proto_rawDescGZIP(), []int{26}
+}
+
+type GetCatalogueStatusResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Total distinct store_ids visible across every connected cluster.
+	CatalogueSize int32 `protobuf:"varint,1,opt,name=catalogue_size,json=catalogueSize,proto3" json:"catalogue_size,omitempty"`
+	// Process uptime in milliseconds (informational; ops dashboards).
+	GatewayUptimeMs int64 `protobuf:"varint,2,opt,name=gateway_uptime_ms,json=gatewayUptimeMs,proto3" json:"gateway_uptime_ms,omitempty"`
+	// Per-cluster connector status.
+	Clusters      []*CatalogueClusterStatus `protobuf:"bytes,3,rep,name=clusters,proto3" json:"clusters,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCatalogueStatusResponse) Reset() {
+	*x = GetCatalogueStatusResponse{}
+	mi := &file_reckon_admin_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCatalogueStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCatalogueStatusResponse) ProtoMessage() {}
+
+func (x *GetCatalogueStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_admin_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCatalogueStatusResponse.ProtoReflect.Descriptor instead.
+func (*GetCatalogueStatusResponse) Descriptor() ([]byte, []int) {
+	return file_reckon_admin_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *GetCatalogueStatusResponse) GetCatalogueSize() int32 {
+	if x != nil {
+		return x.CatalogueSize
+	}
+	return 0
+}
+
+func (x *GetCatalogueStatusResponse) GetGatewayUptimeMs() int64 {
+	if x != nil {
+		return x.GatewayUptimeMs
+	}
+	return 0
+}
+
+func (x *GetCatalogueStatusResponse) GetClusters() []*CatalogueClusterStatus {
+	if x != nil {
+		return x.Clusters
+	}
+	return nil
+}
+
+// Status of a single cluster connector inside the catalogue. Distinct
+// from `ClusterStatus` (enum) in reckon_health.proto, which describes
+// raft-quorum verification outcomes; collapsing both onto the same
+// symbol would collide in the `reckon.gateway.v1` namespace and
+// break code generators that enforce single-definition (buf/protoc).
+type CatalogueClusterStatus struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Operator-assigned label from clusters.eterm.
+	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
+	// Currently-connected Erlang dist members of the cluster.
+	Members []string `protobuf:"bytes,2,rep,name=members,proto3" json:"members,omitempty"`
+	// Distinct store_ids the gateway sees from this cluster.
+	StoreCount int32 `protobuf:"varint,3,opt,name=store_count,json=storeCount,proto3" json:"store_count,omitempty"`
+	// "up" | "degraded" | "unreachable" | "not_yet_connected".
+	Status string `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	// ISO-8601 timestamp of the last successful refresh tick.
+	// Empty string when the connector has never reached the cluster.
+	LastRefresh string `protobuf:"bytes,5,opt,name=last_refresh,json=lastRefresh,proto3" json:"last_refresh,omitempty"`
+	// Free-form recent error description. Empty when status = "up".
+	// NEVER contains the cookie value.
+	LastError     string `protobuf:"bytes,6,opt,name=last_error,json=lastError,proto3" json:"last_error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CatalogueClusterStatus) Reset() {
+	*x = CatalogueClusterStatus{}
+	mi := &file_reckon_admin_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CatalogueClusterStatus) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CatalogueClusterStatus) ProtoMessage() {}
+
+func (x *CatalogueClusterStatus) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_admin_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CatalogueClusterStatus.ProtoReflect.Descriptor instead.
+func (*CatalogueClusterStatus) Descriptor() ([]byte, []int) {
+	return file_reckon_admin_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *CatalogueClusterStatus) GetClusterId() string {
+	if x != nil {
+		return x.ClusterId
+	}
+	return ""
+}
+
+func (x *CatalogueClusterStatus) GetMembers() []string {
+	if x != nil {
+		return x.Members
+	}
+	return nil
+}
+
+func (x *CatalogueClusterStatus) GetStoreCount() int32 {
+	if x != nil {
+		return x.StoreCount
+	}
+	return 0
+}
+
+func (x *CatalogueClusterStatus) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *CatalogueClusterStatus) GetLastRefresh() string {
+	if x != nil {
+		return x.LastRefresh
+	}
+	return ""
+}
+
+func (x *CatalogueClusterStatus) GetLastError() string {
+	if x != nil {
+		return x.LastError
+	}
+	return ""
+}
+
 var File_reckon_admin_proto protoreflect.FileDescriptor
 
 const file_reckon_admin_proto_rawDesc = "" +
@@ -1406,7 +1713,28 @@ const file_reckon_admin_proto_rawDesc = "" +
 	"\adetails\x18\x04 \x03(\v2/.reckon.gateway.v1.LinkRuntimeInfo.DetailsEntryR\adetails\x1a:\n" +
 	"\fDetailsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\xb3\t\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x18\n" +
+	"\x16ReloadCatalogueRequest\"}\n" +
+	"\x17ReloadCatalogueResponse\x12\x14\n" +
+	"\x05added\x18\x01 \x03(\tR\x05added\x12\x18\n" +
+	"\aremoved\x18\x02 \x03(\tR\aremoved\x12\x1c\n" +
+	"\trestarted\x18\x03 \x03(\tR\trestarted\x12\x14\n" +
+	"\x05error\x18\x04 \x01(\tR\x05error\"\x1b\n" +
+	"\x19GetCatalogueStatusRequest\"\xb6\x01\n" +
+	"\x1aGetCatalogueStatusResponse\x12%\n" +
+	"\x0ecatalogue_size\x18\x01 \x01(\x05R\rcatalogueSize\x12*\n" +
+	"\x11gateway_uptime_ms\x18\x02 \x01(\x03R\x0fgatewayUptimeMs\x12E\n" +
+	"\bclusters\x18\x03 \x03(\v2).reckon.gateway.v1.CatalogueClusterStatusR\bclusters\"\xcc\x01\n" +
+	"\x16CatalogueClusterStatus\x12\x1d\n" +
+	"\n" +
+	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x18\n" +
+	"\amembers\x18\x02 \x03(\tR\amembers\x12\x1f\n" +
+	"\vstore_count\x18\x03 \x01(\x05R\n" +
+	"storeCount\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12!\n" +
+	"\flast_refresh\x18\x05 \x01(\tR\vlastRefresh\x12\x1d\n" +
+	"\n" +
+	"last_error\x18\x06 \x01(\tR\tlastError2\x90\v\n" +
 	"\fAdminService\x12\\\n" +
 	"\rGetStoreStats\x12$.reckon.gateway.v1.StoreStatsRequest\x1a%.reckon.gateway.v1.StoreStatsResponse\x12\\\n" +
 	"\rGetStreamInfo\x12$.reckon.gateway.v1.StreamInfoRequest\x1a%.reckon.gateway.v1.StreamInfoResponse\x12n\n" +
@@ -1422,7 +1750,9 @@ const file_reckon_admin_proto_rawDesc = "" +
 	"\tListLinks\x12#.reckon.gateway.v1.ListLinksRequest\x1a$.reckon.gateway.v1.ListLinksResponse\x12V\n" +
 	"\tStartLink\x12#.reckon.gateway.v1.StartLinkRequest\x1a$.reckon.gateway.v1.StartLinkResponse\x12S\n" +
 	"\bStopLink\x12\".reckon.gateway.v1.StopLinkRequest\x1a#.reckon.gateway.v1.StopLinkResponse\x12T\n" +
-	"\vGetLinkInfo\x12!.reckon.gateway.v1.GetLinkRequest\x1a\".reckon.gateway.v1.LinkRuntimeInfoBCZAcodeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1;gatewayv1b\x06proto3"
+	"\vGetLinkInfo\x12!.reckon.gateway.v1.GetLinkRequest\x1a\".reckon.gateway.v1.LinkRuntimeInfo\x12h\n" +
+	"\x0fReloadCatalogue\x12).reckon.gateway.v1.ReloadCatalogueRequest\x1a*.reckon.gateway.v1.ReloadCatalogueResponse\x12q\n" +
+	"\x12GetCatalogueStatus\x12,.reckon.gateway.v1.GetCatalogueStatusRequest\x1a-.reckon.gateway.v1.GetCatalogueStatusResponseBCZAcodeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1;gatewayv1b\x06proto3"
 
 var (
 	file_reckon_admin_proto_rawDescOnce sync.Once
@@ -1436,82 +1766,92 @@ func file_reckon_admin_proto_rawDescGZIP() []byte {
 	return file_reckon_admin_proto_rawDescData
 }
 
-var file_reckon_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
+var file_reckon_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
 var file_reckon_admin_proto_goTypes = []any{
-	(*StoreStatsRequest)(nil),        // 0: reckon.gateway.v1.StoreStatsRequest
-	(*StoreStatsResponse)(nil),       // 1: reckon.gateway.v1.StoreStatsResponse
-	(*StreamInfoRequest)(nil),        // 2: reckon.gateway.v1.StreamInfoRequest
-	(*StreamInfoResponse)(nil),       // 3: reckon.gateway.v1.StreamInfoResponse
-	(*EventTypeSummaryRequest)(nil),  // 4: reckon.gateway.v1.EventTypeSummaryRequest
-	(*EventTypeSummaryEntry)(nil),    // 5: reckon.gateway.v1.EventTypeSummaryEntry
-	(*EventTypeSummaryResponse)(nil), // 6: reckon.gateway.v1.EventTypeSummaryResponse
-	(*ScavengeRequest)(nil),          // 7: reckon.gateway.v1.ScavengeRequest
-	(*ScavengeResponse)(nil),         // 8: reckon.gateway.v1.ScavengeResponse
-	(*ScavengeMatchingRequest)(nil),  // 9: reckon.gateway.v1.ScavengeMatchingRequest
-	(*ScavengeMatchingResponse)(nil), // 10: reckon.gateway.v1.ScavengeMatchingResponse
-	(*CreateLinkRequest)(nil),        // 11: reckon.gateway.v1.CreateLinkRequest
-	(*CreateLinkResponse)(nil),       // 12: reckon.gateway.v1.CreateLinkResponse
-	(*DeleteLinkRequest)(nil),        // 13: reckon.gateway.v1.DeleteLinkRequest
-	(*DeleteLinkResponse)(nil),       // 14: reckon.gateway.v1.DeleteLinkResponse
-	(*GetLinkRequest)(nil),           // 15: reckon.gateway.v1.GetLinkRequest
-	(*LinkInfo)(nil),                 // 16: reckon.gateway.v1.LinkInfo
-	(*StartLinkRequest)(nil),         // 17: reckon.gateway.v1.StartLinkRequest
-	(*StartLinkResponse)(nil),        // 18: reckon.gateway.v1.StartLinkResponse
-	(*StopLinkRequest)(nil),          // 19: reckon.gateway.v1.StopLinkRequest
-	(*StopLinkResponse)(nil),         // 20: reckon.gateway.v1.StopLinkResponse
-	(*ListLinksRequest)(nil),         // 21: reckon.gateway.v1.ListLinksRequest
-	(*ListLinksResponse)(nil),        // 22: reckon.gateway.v1.ListLinksResponse
-	(*LinkRuntimeInfo)(nil),          // 23: reckon.gateway.v1.LinkRuntimeInfo
-	nil,                              // 24: reckon.gateway.v1.StoreStatsResponse.DetailsEntry
-	nil,                              // 25: reckon.gateway.v1.ScavengeRequest.OptionsEntry
-	nil,                              // 26: reckon.gateway.v1.ScavengeResponse.DetailsEntry
-	nil,                              // 27: reckon.gateway.v1.ScavengeMatchingRequest.OptionsEntry
-	nil,                              // 28: reckon.gateway.v1.CreateLinkRequest.OptionsEntry
-	nil,                              // 29: reckon.gateway.v1.LinkInfo.OptionsEntry
-	nil,                              // 30: reckon.gateway.v1.LinkRuntimeInfo.DetailsEntry
+	(*StoreStatsRequest)(nil),          // 0: reckon.gateway.v1.StoreStatsRequest
+	(*StoreStatsResponse)(nil),         // 1: reckon.gateway.v1.StoreStatsResponse
+	(*StreamInfoRequest)(nil),          // 2: reckon.gateway.v1.StreamInfoRequest
+	(*StreamInfoResponse)(nil),         // 3: reckon.gateway.v1.StreamInfoResponse
+	(*EventTypeSummaryRequest)(nil),    // 4: reckon.gateway.v1.EventTypeSummaryRequest
+	(*EventTypeSummaryEntry)(nil),      // 5: reckon.gateway.v1.EventTypeSummaryEntry
+	(*EventTypeSummaryResponse)(nil),   // 6: reckon.gateway.v1.EventTypeSummaryResponse
+	(*ScavengeRequest)(nil),            // 7: reckon.gateway.v1.ScavengeRequest
+	(*ScavengeResponse)(nil),           // 8: reckon.gateway.v1.ScavengeResponse
+	(*ScavengeMatchingRequest)(nil),    // 9: reckon.gateway.v1.ScavengeMatchingRequest
+	(*ScavengeMatchingResponse)(nil),   // 10: reckon.gateway.v1.ScavengeMatchingResponse
+	(*CreateLinkRequest)(nil),          // 11: reckon.gateway.v1.CreateLinkRequest
+	(*CreateLinkResponse)(nil),         // 12: reckon.gateway.v1.CreateLinkResponse
+	(*DeleteLinkRequest)(nil),          // 13: reckon.gateway.v1.DeleteLinkRequest
+	(*DeleteLinkResponse)(nil),         // 14: reckon.gateway.v1.DeleteLinkResponse
+	(*GetLinkRequest)(nil),             // 15: reckon.gateway.v1.GetLinkRequest
+	(*LinkInfo)(nil),                   // 16: reckon.gateway.v1.LinkInfo
+	(*StartLinkRequest)(nil),           // 17: reckon.gateway.v1.StartLinkRequest
+	(*StartLinkResponse)(nil),          // 18: reckon.gateway.v1.StartLinkResponse
+	(*StopLinkRequest)(nil),            // 19: reckon.gateway.v1.StopLinkRequest
+	(*StopLinkResponse)(nil),           // 20: reckon.gateway.v1.StopLinkResponse
+	(*ListLinksRequest)(nil),           // 21: reckon.gateway.v1.ListLinksRequest
+	(*ListLinksResponse)(nil),          // 22: reckon.gateway.v1.ListLinksResponse
+	(*LinkRuntimeInfo)(nil),            // 23: reckon.gateway.v1.LinkRuntimeInfo
+	(*ReloadCatalogueRequest)(nil),     // 24: reckon.gateway.v1.ReloadCatalogueRequest
+	(*ReloadCatalogueResponse)(nil),    // 25: reckon.gateway.v1.ReloadCatalogueResponse
+	(*GetCatalogueStatusRequest)(nil),  // 26: reckon.gateway.v1.GetCatalogueStatusRequest
+	(*GetCatalogueStatusResponse)(nil), // 27: reckon.gateway.v1.GetCatalogueStatusResponse
+	(*CatalogueClusterStatus)(nil),     // 28: reckon.gateway.v1.CatalogueClusterStatus
+	nil,                                // 29: reckon.gateway.v1.StoreStatsResponse.DetailsEntry
+	nil,                                // 30: reckon.gateway.v1.ScavengeRequest.OptionsEntry
+	nil,                                // 31: reckon.gateway.v1.ScavengeResponse.DetailsEntry
+	nil,                                // 32: reckon.gateway.v1.ScavengeMatchingRequest.OptionsEntry
+	nil,                                // 33: reckon.gateway.v1.CreateLinkRequest.OptionsEntry
+	nil,                                // 34: reckon.gateway.v1.LinkInfo.OptionsEntry
+	nil,                                // 35: reckon.gateway.v1.LinkRuntimeInfo.DetailsEntry
 }
 var file_reckon_admin_proto_depIdxs = []int32{
-	24, // 0: reckon.gateway.v1.StoreStatsResponse.details:type_name -> reckon.gateway.v1.StoreStatsResponse.DetailsEntry
+	29, // 0: reckon.gateway.v1.StoreStatsResponse.details:type_name -> reckon.gateway.v1.StoreStatsResponse.DetailsEntry
 	5,  // 1: reckon.gateway.v1.EventTypeSummaryResponse.entries:type_name -> reckon.gateway.v1.EventTypeSummaryEntry
-	25, // 2: reckon.gateway.v1.ScavengeRequest.options:type_name -> reckon.gateway.v1.ScavengeRequest.OptionsEntry
-	26, // 3: reckon.gateway.v1.ScavengeResponse.details:type_name -> reckon.gateway.v1.ScavengeResponse.DetailsEntry
-	27, // 4: reckon.gateway.v1.ScavengeMatchingRequest.options:type_name -> reckon.gateway.v1.ScavengeMatchingRequest.OptionsEntry
+	30, // 2: reckon.gateway.v1.ScavengeRequest.options:type_name -> reckon.gateway.v1.ScavengeRequest.OptionsEntry
+	31, // 3: reckon.gateway.v1.ScavengeResponse.details:type_name -> reckon.gateway.v1.ScavengeResponse.DetailsEntry
+	32, // 4: reckon.gateway.v1.ScavengeMatchingRequest.options:type_name -> reckon.gateway.v1.ScavengeMatchingRequest.OptionsEntry
 	8,  // 5: reckon.gateway.v1.ScavengeMatchingResponse.results:type_name -> reckon.gateway.v1.ScavengeResponse
-	28, // 6: reckon.gateway.v1.CreateLinkRequest.options:type_name -> reckon.gateway.v1.CreateLinkRequest.OptionsEntry
-	29, // 7: reckon.gateway.v1.LinkInfo.options:type_name -> reckon.gateway.v1.LinkInfo.OptionsEntry
+	33, // 6: reckon.gateway.v1.CreateLinkRequest.options:type_name -> reckon.gateway.v1.CreateLinkRequest.OptionsEntry
+	34, // 7: reckon.gateway.v1.LinkInfo.options:type_name -> reckon.gateway.v1.LinkInfo.OptionsEntry
 	16, // 8: reckon.gateway.v1.ListLinksResponse.links:type_name -> reckon.gateway.v1.LinkInfo
-	30, // 9: reckon.gateway.v1.LinkRuntimeInfo.details:type_name -> reckon.gateway.v1.LinkRuntimeInfo.DetailsEntry
-	0,  // 10: reckon.gateway.v1.AdminService.GetStoreStats:input_type -> reckon.gateway.v1.StoreStatsRequest
-	2,  // 11: reckon.gateway.v1.AdminService.GetStreamInfo:input_type -> reckon.gateway.v1.StreamInfoRequest
-	4,  // 12: reckon.gateway.v1.AdminService.GetEventTypeSummary:input_type -> reckon.gateway.v1.EventTypeSummaryRequest
-	7,  // 13: reckon.gateway.v1.AdminService.Scavenge:input_type -> reckon.gateway.v1.ScavengeRequest
-	9,  // 14: reckon.gateway.v1.AdminService.ScavengeMatching:input_type -> reckon.gateway.v1.ScavengeMatchingRequest
-	7,  // 15: reckon.gateway.v1.AdminService.ScavengeDryRun:input_type -> reckon.gateway.v1.ScavengeRequest
-	11, // 16: reckon.gateway.v1.AdminService.CreateLink:input_type -> reckon.gateway.v1.CreateLinkRequest
-	13, // 17: reckon.gateway.v1.AdminService.DeleteLink:input_type -> reckon.gateway.v1.DeleteLinkRequest
-	15, // 18: reckon.gateway.v1.AdminService.GetLink:input_type -> reckon.gateway.v1.GetLinkRequest
-	21, // 19: reckon.gateway.v1.AdminService.ListLinks:input_type -> reckon.gateway.v1.ListLinksRequest
-	17, // 20: reckon.gateway.v1.AdminService.StartLink:input_type -> reckon.gateway.v1.StartLinkRequest
-	19, // 21: reckon.gateway.v1.AdminService.StopLink:input_type -> reckon.gateway.v1.StopLinkRequest
-	15, // 22: reckon.gateway.v1.AdminService.GetLinkInfo:input_type -> reckon.gateway.v1.GetLinkRequest
-	1,  // 23: reckon.gateway.v1.AdminService.GetStoreStats:output_type -> reckon.gateway.v1.StoreStatsResponse
-	3,  // 24: reckon.gateway.v1.AdminService.GetStreamInfo:output_type -> reckon.gateway.v1.StreamInfoResponse
-	6,  // 25: reckon.gateway.v1.AdminService.GetEventTypeSummary:output_type -> reckon.gateway.v1.EventTypeSummaryResponse
-	8,  // 26: reckon.gateway.v1.AdminService.Scavenge:output_type -> reckon.gateway.v1.ScavengeResponse
-	10, // 27: reckon.gateway.v1.AdminService.ScavengeMatching:output_type -> reckon.gateway.v1.ScavengeMatchingResponse
-	8,  // 28: reckon.gateway.v1.AdminService.ScavengeDryRun:output_type -> reckon.gateway.v1.ScavengeResponse
-	12, // 29: reckon.gateway.v1.AdminService.CreateLink:output_type -> reckon.gateway.v1.CreateLinkResponse
-	14, // 30: reckon.gateway.v1.AdminService.DeleteLink:output_type -> reckon.gateway.v1.DeleteLinkResponse
-	16, // 31: reckon.gateway.v1.AdminService.GetLink:output_type -> reckon.gateway.v1.LinkInfo
-	22, // 32: reckon.gateway.v1.AdminService.ListLinks:output_type -> reckon.gateway.v1.ListLinksResponse
-	18, // 33: reckon.gateway.v1.AdminService.StartLink:output_type -> reckon.gateway.v1.StartLinkResponse
-	20, // 34: reckon.gateway.v1.AdminService.StopLink:output_type -> reckon.gateway.v1.StopLinkResponse
-	23, // 35: reckon.gateway.v1.AdminService.GetLinkInfo:output_type -> reckon.gateway.v1.LinkRuntimeInfo
-	23, // [23:36] is the sub-list for method output_type
-	10, // [10:23] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	35, // 9: reckon.gateway.v1.LinkRuntimeInfo.details:type_name -> reckon.gateway.v1.LinkRuntimeInfo.DetailsEntry
+	28, // 10: reckon.gateway.v1.GetCatalogueStatusResponse.clusters:type_name -> reckon.gateway.v1.CatalogueClusterStatus
+	0,  // 11: reckon.gateway.v1.AdminService.GetStoreStats:input_type -> reckon.gateway.v1.StoreStatsRequest
+	2,  // 12: reckon.gateway.v1.AdminService.GetStreamInfo:input_type -> reckon.gateway.v1.StreamInfoRequest
+	4,  // 13: reckon.gateway.v1.AdminService.GetEventTypeSummary:input_type -> reckon.gateway.v1.EventTypeSummaryRequest
+	7,  // 14: reckon.gateway.v1.AdminService.Scavenge:input_type -> reckon.gateway.v1.ScavengeRequest
+	9,  // 15: reckon.gateway.v1.AdminService.ScavengeMatching:input_type -> reckon.gateway.v1.ScavengeMatchingRequest
+	7,  // 16: reckon.gateway.v1.AdminService.ScavengeDryRun:input_type -> reckon.gateway.v1.ScavengeRequest
+	11, // 17: reckon.gateway.v1.AdminService.CreateLink:input_type -> reckon.gateway.v1.CreateLinkRequest
+	13, // 18: reckon.gateway.v1.AdminService.DeleteLink:input_type -> reckon.gateway.v1.DeleteLinkRequest
+	15, // 19: reckon.gateway.v1.AdminService.GetLink:input_type -> reckon.gateway.v1.GetLinkRequest
+	21, // 20: reckon.gateway.v1.AdminService.ListLinks:input_type -> reckon.gateway.v1.ListLinksRequest
+	17, // 21: reckon.gateway.v1.AdminService.StartLink:input_type -> reckon.gateway.v1.StartLinkRequest
+	19, // 22: reckon.gateway.v1.AdminService.StopLink:input_type -> reckon.gateway.v1.StopLinkRequest
+	15, // 23: reckon.gateway.v1.AdminService.GetLinkInfo:input_type -> reckon.gateway.v1.GetLinkRequest
+	24, // 24: reckon.gateway.v1.AdminService.ReloadCatalogue:input_type -> reckon.gateway.v1.ReloadCatalogueRequest
+	26, // 25: reckon.gateway.v1.AdminService.GetCatalogueStatus:input_type -> reckon.gateway.v1.GetCatalogueStatusRequest
+	1,  // 26: reckon.gateway.v1.AdminService.GetStoreStats:output_type -> reckon.gateway.v1.StoreStatsResponse
+	3,  // 27: reckon.gateway.v1.AdminService.GetStreamInfo:output_type -> reckon.gateway.v1.StreamInfoResponse
+	6,  // 28: reckon.gateway.v1.AdminService.GetEventTypeSummary:output_type -> reckon.gateway.v1.EventTypeSummaryResponse
+	8,  // 29: reckon.gateway.v1.AdminService.Scavenge:output_type -> reckon.gateway.v1.ScavengeResponse
+	10, // 30: reckon.gateway.v1.AdminService.ScavengeMatching:output_type -> reckon.gateway.v1.ScavengeMatchingResponse
+	8,  // 31: reckon.gateway.v1.AdminService.ScavengeDryRun:output_type -> reckon.gateway.v1.ScavengeResponse
+	12, // 32: reckon.gateway.v1.AdminService.CreateLink:output_type -> reckon.gateway.v1.CreateLinkResponse
+	14, // 33: reckon.gateway.v1.AdminService.DeleteLink:output_type -> reckon.gateway.v1.DeleteLinkResponse
+	16, // 34: reckon.gateway.v1.AdminService.GetLink:output_type -> reckon.gateway.v1.LinkInfo
+	22, // 35: reckon.gateway.v1.AdminService.ListLinks:output_type -> reckon.gateway.v1.ListLinksResponse
+	18, // 36: reckon.gateway.v1.AdminService.StartLink:output_type -> reckon.gateway.v1.StartLinkResponse
+	20, // 37: reckon.gateway.v1.AdminService.StopLink:output_type -> reckon.gateway.v1.StopLinkResponse
+	23, // 38: reckon.gateway.v1.AdminService.GetLinkInfo:output_type -> reckon.gateway.v1.LinkRuntimeInfo
+	25, // 39: reckon.gateway.v1.AdminService.ReloadCatalogue:output_type -> reckon.gateway.v1.ReloadCatalogueResponse
+	27, // 40: reckon.gateway.v1.AdminService.GetCatalogueStatus:output_type -> reckon.gateway.v1.GetCatalogueStatusResponse
+	26, // [26:41] is the sub-list for method output_type
+	11, // [11:26] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_reckon_admin_proto_init() }
@@ -1525,7 +1865,7 @@ func file_reckon_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_reckon_admin_proto_rawDesc), len(file_reckon_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   31,
+			NumMessages:   36,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

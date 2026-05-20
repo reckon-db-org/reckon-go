@@ -32,6 +32,8 @@ const (
 	AdminService_StartLink_FullMethodName           = "/reckon.gateway.v1.AdminService/StartLink"
 	AdminService_StopLink_FullMethodName            = "/reckon.gateway.v1.AdminService/StopLink"
 	AdminService_GetLinkInfo_FullMethodName         = "/reckon.gateway.v1.AdminService/GetLinkInfo"
+	AdminService_ReloadCatalogue_FullMethodName     = "/reckon.gateway.v1.AdminService/ReloadCatalogue"
+	AdminService_GetCatalogueStatus_FullMethodName  = "/reckon.gateway.v1.AdminService/GetCatalogueStatus"
 )
 
 // AdminServiceClient is the client API for AdminService service.
@@ -66,6 +68,13 @@ type AdminServiceClient interface {
 	StopLink(ctx context.Context, in *StopLinkRequest, opts ...grpc.CallOption) (*StopLinkResponse, error)
 	// Get runtime info about a link.
 	GetLinkInfo(ctx context.Context, in *GetLinkRequest, opts ...grpc.CallOption) (*LinkRuntimeInfo, error)
+	// Re-read the operator-curated clusters.eterm and reconcile the
+	// running cluster connectors. Returns the diff.
+	ReloadCatalogue(ctx context.Context, in *ReloadCatalogueRequest, opts ...grpc.CallOption) (*ReloadCatalogueResponse, error)
+	// Read-only snapshot of the catalogue: per-cluster connector
+	// status, member counts, store counts, refresh ages. Cookies
+	// are NEVER returned.
+	GetCatalogueStatus(ctx context.Context, in *GetCatalogueStatusRequest, opts ...grpc.CallOption) (*GetCatalogueStatusResponse, error)
 }
 
 type adminServiceClient struct {
@@ -206,6 +215,26 @@ func (c *adminServiceClient) GetLinkInfo(ctx context.Context, in *GetLinkRequest
 	return out, nil
 }
 
+func (c *adminServiceClient) ReloadCatalogue(ctx context.Context, in *ReloadCatalogueRequest, opts ...grpc.CallOption) (*ReloadCatalogueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReloadCatalogueResponse)
+	err := c.cc.Invoke(ctx, AdminService_ReloadCatalogue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) GetCatalogueStatus(ctx context.Context, in *GetCatalogueStatusRequest, opts ...grpc.CallOption) (*GetCatalogueStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCatalogueStatusResponse)
+	err := c.cc.Invoke(ctx, AdminService_GetCatalogueStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations should embed UnimplementedAdminServiceServer
 // for forward compatibility.
@@ -238,6 +267,13 @@ type AdminServiceServer interface {
 	StopLink(context.Context, *StopLinkRequest) (*StopLinkResponse, error)
 	// Get runtime info about a link.
 	GetLinkInfo(context.Context, *GetLinkRequest) (*LinkRuntimeInfo, error)
+	// Re-read the operator-curated clusters.eterm and reconcile the
+	// running cluster connectors. Returns the diff.
+	ReloadCatalogue(context.Context, *ReloadCatalogueRequest) (*ReloadCatalogueResponse, error)
+	// Read-only snapshot of the catalogue: per-cluster connector
+	// status, member counts, store counts, refresh ages. Cookies
+	// are NEVER returned.
+	GetCatalogueStatus(context.Context, *GetCatalogueStatusRequest) (*GetCatalogueStatusResponse, error)
 }
 
 // UnimplementedAdminServiceServer should be embedded to have
@@ -285,6 +321,12 @@ func (UnimplementedAdminServiceServer) StopLink(context.Context, *StopLinkReques
 }
 func (UnimplementedAdminServiceServer) GetLinkInfo(context.Context, *GetLinkRequest) (*LinkRuntimeInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetLinkInfo not implemented")
+}
+func (UnimplementedAdminServiceServer) ReloadCatalogue(context.Context, *ReloadCatalogueRequest) (*ReloadCatalogueResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReloadCatalogue not implemented")
+}
+func (UnimplementedAdminServiceServer) GetCatalogueStatus(context.Context, *GetCatalogueStatusRequest) (*GetCatalogueStatusResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCatalogueStatus not implemented")
 }
 func (UnimplementedAdminServiceServer) testEmbeddedByValue() {}
 
@@ -540,6 +582,42 @@ func _AdminService_GetLinkInfo_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_ReloadCatalogue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReloadCatalogueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).ReloadCatalogue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_ReloadCatalogue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).ReloadCatalogue(ctx, req.(*ReloadCatalogueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_GetCatalogueStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCatalogueStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetCatalogueStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_GetCatalogueStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetCatalogueStatus(ctx, req.(*GetCatalogueStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -598,6 +676,14 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLinkInfo",
 			Handler:    _AdminService_GetLinkInfo_Handler,
+		},
+		{
+			MethodName: "ReloadCatalogue",
+			Handler:    _AdminService_ReloadCatalogue_Handler,
+		},
+		{
+			MethodName: "GetCatalogueStatus",
+			Handler:    _AdminService_GetCatalogueStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
