@@ -30,6 +30,7 @@ catalogue-mode admin operations (`Admin.ReloadCatalogue`,
 | `Causation` | ✅ |
 | `Admin` | ✅ |
 | `Health` | ✅ |
+| `Dcb` | ✅ |
 
 ## `reckon` CLI
 

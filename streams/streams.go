@@ -110,6 +110,15 @@ type RecordedEvent struct {
 	PrevEventHash []byte
 }
 
+// RecordedEventFromProto converts a wire-shape *pb.RecordedEvent
+// into the idiomatic Go [RecordedEvent]. Exposed for sibling
+// packages (e.g. [codeberg.org/reckon-db-org/reckon-go/dcb]) that
+// need to surface the same event type without re-deriving the
+// field-by-field mapping.
+func RecordedEventFromProto(p *pb.RecordedEvent) RecordedEvent {
+	return recordedFromProto(p)
+}
+
 func recordedFromProto(p *pb.RecordedEvent) RecordedEvent {
 	return RecordedEvent{
 		EventID:             p.GetEventId(),
