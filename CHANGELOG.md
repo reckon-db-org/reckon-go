@@ -7,6 +7,19 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ## [Unreleased]
 
+### Removed — causation package (BREAKING)
+
+Deleted the `causation` package (`Client.Causation()`, `Effects` /
+`Cause` / `Chain` / `Correlated` / `Graph`, `GraphNode`), the
+`reckon causation …` CLI subcommands, and the generated
+`reckon_causation*.pb.go` stubs — tracking reckon-proto 0.5.0, which
+dropped `CausationService`.
+
+Causation/correlation traversal is not an event-store concern.
+`causation_id` and `correlation_id` are still ordinary keys in an
+event's metadata (`RecordedEvent.Metadata`); the store relays metadata
+verbatim. Consumers that need lineage build a read model.
+
 ### Added
 
 - `scripts/release-local.sh` — one-command manual release (build + publish to

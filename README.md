@@ -27,7 +27,6 @@ catalogue-mode admin operations (`Admin.ReloadCatalogue`,
 | `Snapshots` | ✅ |
 | `Schema` | ✅ |
 | `Temporal` | ✅ |
-| `Causation` | ✅ |
 | `Admin` | ✅ |
 | `Health` | ✅ |
 | `Dcb` | ✅ |

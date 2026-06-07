@@ -9,7 +9,7 @@
 //
 //	c, err := reckon.Connect(ctx, "beam01.lab:50051")
 //
-// Top-level facade
+// # Top-level facade
 //
 // `reckon.Client` is the entry point. Per-service operations are
 // accessed through sub-clients:
@@ -20,11 +20,10 @@
 //	c.Snapshots()     // per-stream snapshots
 //	c.Schema()        // schema registration + upcasting
 //	c.Temporal()      // time-travel reads
-//	c.Causation()     // event-provenance DAG
 //	c.Admin()         // scavenge, links, store inspection
 //	c.Health()        // standard gRPC health
 //
-// Streaming semantics
+// # Streaming semantics
 //
 // Server-streaming RPCs (Subscribe, WatchStores, ...) return a Go
 // channel of events plus an error channel. Consumers `range` over the

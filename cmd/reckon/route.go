@@ -48,13 +48,6 @@ var routes = map[string]handler{
 	"temporal range":      temporalRange,
 	"temporal version-at": temporalVersionAt,
 
-	// causation (store-bound)
-	"causation effects":    causationEffects,
-	"causation cause":      causationCause,
-	"causation chain":      causationChain,
-	"causation correlated": causationCorrelated,
-	"causation graph":      causationGraph,
-
 	// admin (store-bound)
 	"admin stats":             adminStats,
 	"admin stream-info":       adminStreamInfo,

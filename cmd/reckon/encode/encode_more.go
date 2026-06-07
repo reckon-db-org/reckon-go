@@ -2,7 +2,6 @@ package encode
 
 import (
 	"codeberg.org/reckon-db-org/reckon-go/admin"
-	"codeberg.org/reckon-db-org/reckon-go/causation"
 	"codeberg.org/reckon-db-org/reckon-go/health"
 	"codeberg.org/reckon-db-org/reckon-go/schema"
 	"codeberg.org/reckon-db-org/reckon-go/snapshots"
@@ -141,17 +140,6 @@ func ServerInfo(s health.ServerInfo) map[string]any {
 		"api_compatibility_version": s.APICompatibilityVersion, "integrity_enabled": s.IntegrityEnabled,
 		"integrity_algo": s.IntegrityAlgo, "hmac_key_id": s.HmacKeyId,
 	}
-}
-
-// --- causation ---
-
-// GraphNode renders the recursive causation tree (DESIGN §4.6).
-func GraphNode(n causation.GraphNode, mode Bytes) map[string]any {
-	children := make([]map[string]any, len(n.Children))
-	for i, c := range n.Children {
-		children[i] = GraphNode(c, mode)
-	}
-	return map[string]any{"event": Event(n.Event, mode), "children": children}
 }
 
 // --- map/slice nil-safety helpers ---
