@@ -20,6 +20,23 @@ index (reckon-db 5.0.0+), else a server-side scan; the store does not
 interpret the key. Mirrors `ReadByTags` / `ReadByEventTypes`. Stubs
 regenerated from reckon-proto 0.6.0 (`StreamService.ReadByMetadata`).
 
+### Added — lineage convenience (`streams/lineage.go`)
+
+Convention sugar over `ReadByMetadata`, so Go callers don't hand-roll the
+Enterprise Integration Patterns keys:
+
+- Reserved-key constants `CausationIDKey` / `CorrelationIDKey` /
+  `ConversationIDKey` (matching reckon_shared.proto, the single source of
+  truth for the names).
+- `ReadEffects(messageID)` / `ReadCorrelated(correlationID)` /
+  `ReadConversation(conversationID)` — named readers over the reserved keys.
+- `WithLineage(meta, causationID, correlationID)` for building a
+  `ProposedEvent.Metadata` map before marshalling.
+
+These are convenience, not a store feature, and explicitly NOT
+auto-propagation (a raw client has no notion of "the message I am handling";
+propagation is a framework's job, e.g. evoq on BEAM).
+
 ### Removed — causation package (BREAKING)
 
 Deleted the `causation` package (`Client.Causation()`, `Effects` /
