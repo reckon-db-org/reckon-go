@@ -435,6 +435,74 @@ func (x *ReadByTagsRequest) GetBatchSize() uint64 {
 	return 0
 }
 
+type ReadByMetadataRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	StoreId       string                 `protobuf:"bytes,1,opt,name=store_id,json=storeId,proto3" json:"store_id,omitempty"`
+	Key           string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Value         string                 `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	BatchSize     uint64                 `protobuf:"varint,4,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadByMetadataRequest) Reset() {
+	*x = ReadByMetadataRequest{}
+	mi := &file_reckon_streams_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadByMetadataRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadByMetadataRequest) ProtoMessage() {}
+
+func (x *ReadByMetadataRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_streams_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadByMetadataRequest.ProtoReflect.Descriptor instead.
+func (*ReadByMetadataRequest) Descriptor() ([]byte, []int) {
+	return file_reckon_streams_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ReadByMetadataRequest) GetStoreId() string {
+	if x != nil {
+		return x.StoreId
+	}
+	return ""
+}
+
+func (x *ReadByMetadataRequest) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *ReadByMetadataRequest) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *ReadByMetadataRequest) GetBatchSize() uint64 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
 type ReadAllGlobalRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	StoreId       string                 `protobuf:"bytes,1,opt,name=store_id,json=storeId,proto3" json:"store_id,omitempty"`
@@ -446,7 +514,7 @@ type ReadAllGlobalRequest struct {
 
 func (x *ReadAllGlobalRequest) Reset() {
 	*x = ReadAllGlobalRequest{}
-	mi := &file_reckon_streams_proto_msgTypes[7]
+	mi := &file_reckon_streams_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -458,7 +526,7 @@ func (x *ReadAllGlobalRequest) String() string {
 func (*ReadAllGlobalRequest) ProtoMessage() {}
 
 func (x *ReadAllGlobalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[7]
+	mi := &file_reckon_streams_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -471,7 +539,7 @@ func (x *ReadAllGlobalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadAllGlobalRequest.ProtoReflect.Descriptor instead.
 func (*ReadAllGlobalRequest) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{7}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ReadAllGlobalRequest) GetStoreId() string {
@@ -506,7 +574,7 @@ type AppendEventsResponse struct {
 
 func (x *AppendEventsResponse) Reset() {
 	*x = AppendEventsResponse{}
-	mi := &file_reckon_streams_proto_msgTypes[8]
+	mi := &file_reckon_streams_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -518,7 +586,7 @@ func (x *AppendEventsResponse) String() string {
 func (*AppendEventsResponse) ProtoMessage() {}
 
 func (x *AppendEventsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[8]
+	mi := &file_reckon_streams_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -531,7 +599,7 @@ func (x *AppendEventsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AppendEventsResponse.ProtoReflect.Descriptor instead.
 func (*AppendEventsResponse) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{8}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *AppendEventsResponse) GetVersion() uint64 {
@@ -564,7 +632,7 @@ type ReadStreamResponse struct {
 
 func (x *ReadStreamResponse) Reset() {
 	*x = ReadStreamResponse{}
-	mi := &file_reckon_streams_proto_msgTypes[9]
+	mi := &file_reckon_streams_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -576,7 +644,7 @@ func (x *ReadStreamResponse) String() string {
 func (*ReadStreamResponse) ProtoMessage() {}
 
 func (x *ReadStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[9]
+	mi := &file_reckon_streams_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -589,7 +657,7 @@ func (x *ReadStreamResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadStreamResponse.ProtoReflect.Descriptor instead.
 func (*ReadStreamResponse) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{9}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ReadStreamResponse) GetEvents() []*RecordedEvent {
@@ -608,7 +676,7 @@ type GetStreamVersionResponse struct {
 
 func (x *GetStreamVersionResponse) Reset() {
 	*x = GetStreamVersionResponse{}
-	mi := &file_reckon_streams_proto_msgTypes[10]
+	mi := &file_reckon_streams_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -620,7 +688,7 @@ func (x *GetStreamVersionResponse) String() string {
 func (*GetStreamVersionResponse) ProtoMessage() {}
 
 func (x *GetStreamVersionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[10]
+	mi := &file_reckon_streams_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +701,7 @@ func (x *GetStreamVersionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStreamVersionResponse.ProtoReflect.Descriptor instead.
 func (*GetStreamVersionResponse) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{10}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetStreamVersionResponse) GetVersion() int64 {
@@ -652,7 +720,7 @@ type ListStreamsResponse struct {
 
 func (x *ListStreamsResponse) Reset() {
 	*x = ListStreamsResponse{}
-	mi := &file_reckon_streams_proto_msgTypes[11]
+	mi := &file_reckon_streams_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -664,7 +732,7 @@ func (x *ListStreamsResponse) String() string {
 func (*ListStreamsResponse) ProtoMessage() {}
 
 func (x *ListStreamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[11]
+	mi := &file_reckon_streams_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -677,7 +745,7 @@ func (x *ListStreamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListStreamsResponse.ProtoReflect.Descriptor instead.
 func (*ListStreamsResponse) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{11}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListStreamsResponse) GetStreamIds() []string {
@@ -695,7 +763,7 @@ type DeleteStreamResponse struct {
 
 func (x *DeleteStreamResponse) Reset() {
 	*x = DeleteStreamResponse{}
-	mi := &file_reckon_streams_proto_msgTypes[12]
+	mi := &file_reckon_streams_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -707,7 +775,7 @@ func (x *DeleteStreamResponse) String() string {
 func (*DeleteStreamResponse) ProtoMessage() {}
 
 func (x *DeleteStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_reckon_streams_proto_msgTypes[12]
+	mi := &file_reckon_streams_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -720,7 +788,7 @@ func (x *DeleteStreamResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteStreamResponse.ProtoReflect.Descriptor instead.
 func (*DeleteStreamResponse) Descriptor() ([]byte, []int) {
-	return file_reckon_streams_proto_rawDescGZIP(), []int{12}
+	return file_reckon_streams_proto_rawDescGZIP(), []int{13}
 }
 
 var File_reckon_streams_proto protoreflect.FileDescriptor
@@ -757,6 +825,12 @@ const file_reckon_streams_proto_rawDesc = "" +
 	"\x04tags\x18\x02 \x03(\tR\x04tags\x121\n" +
 	"\x05match\x18\x03 \x01(\x0e2\x1b.reckon.gateway.v1.TagMatchR\x05match\x12\x1d\n" +
 	"\n" +
+	"batch_size\x18\x04 \x01(\x04R\tbatchSize\"y\n" +
+	"\x15ReadByMetadataRequest\x12\x19\n" +
+	"\bstore_id\x18\x01 \x01(\tR\astoreId\x12\x10\n" +
+	"\x03key\x18\x02 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\x12\x1d\n" +
+	"\n" +
 	"batch_size\x18\x04 \x01(\x04R\tbatchSize\"_\n" +
 	"\x14ReadAllGlobalRequest\x12\x19\n" +
 	"\bstore_id\x18\x01 \x01(\tR\astoreId\x12\x16\n" +
@@ -773,7 +847,7 @@ const file_reckon_streams_proto_rawDesc = "" +
 	"\x13ListStreamsResponse\x12\x1d\n" +
 	"\n" +
 	"stream_ids\x18\x01 \x03(\tR\tstreamIds\"\x16\n" +
-	"\x14DeleteStreamResponse2\xe5\a\n" +
+	"\x14DeleteStreamResponse2\xc8\b\n" +
 	"\rStreamService\x12_\n" +
 	"\fAppendEvents\x12&.reckon.gateway.v1.AppendEventsRequest\x1a'.reckon.gateway.v1.AppendEventsResponse\x12`\n" +
 	"\x11ReadStreamForward\x12$.reckon.gateway.v1.ReadStreamRequest\x1a%.reckon.gateway.v1.ReadStreamResponse\x12a\n" +
@@ -784,7 +858,8 @@ const file_reckon_streams_proto_rawDesc = "" +
 	"\fDeleteStream\x12&.reckon.gateway.v1.DeleteStreamRequest\x1a'.reckon.gateway.v1.DeleteStreamResponse\x12e\n" +
 	"\x10ReadByEventTypes\x12*.reckon.gateway.v1.ReadByEventTypesRequest\x1a%.reckon.gateway.v1.ReadStreamResponse\x12Y\n" +
 	"\n" +
-	"ReadByTags\x12$.reckon.gateway.v1.ReadByTagsRequest\x1a%.reckon.gateway.v1.ReadStreamResponse\x12_\n" +
+	"ReadByTags\x12$.reckon.gateway.v1.ReadByTagsRequest\x1a%.reckon.gateway.v1.ReadStreamResponse\x12a\n" +
+	"\x0eReadByMetadata\x12(.reckon.gateway.v1.ReadByMetadataRequest\x1a%.reckon.gateway.v1.ReadStreamResponse\x12_\n" +
 	"\rReadAllGlobal\x12'.reckon.gateway.v1.ReadAllGlobalRequest\x1a%.reckon.gateway.v1.ReadStreamResponseBCZAcodeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1;gatewayv1b\x06proto3"
 
 var (
@@ -799,7 +874,7 @@ func file_reckon_streams_proto_rawDescGZIP() []byte {
 	return file_reckon_streams_proto_rawDescData
 }
 
-var file_reckon_streams_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_reckon_streams_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_reckon_streams_proto_goTypes = []any{
 	(*AppendEventsRequest)(nil),      // 0: reckon.gateway.v1.AppendEventsRequest
 	(*ReadStreamRequest)(nil),        // 1: reckon.gateway.v1.ReadStreamRequest
@@ -808,20 +883,21 @@ var file_reckon_streams_proto_goTypes = []any{
 	(*DeleteStreamRequest)(nil),      // 4: reckon.gateway.v1.DeleteStreamRequest
 	(*ReadByEventTypesRequest)(nil),  // 5: reckon.gateway.v1.ReadByEventTypesRequest
 	(*ReadByTagsRequest)(nil),        // 6: reckon.gateway.v1.ReadByTagsRequest
-	(*ReadAllGlobalRequest)(nil),     // 7: reckon.gateway.v1.ReadAllGlobalRequest
-	(*AppendEventsResponse)(nil),     // 8: reckon.gateway.v1.AppendEventsResponse
-	(*ReadStreamResponse)(nil),       // 9: reckon.gateway.v1.ReadStreamResponse
-	(*GetStreamVersionResponse)(nil), // 10: reckon.gateway.v1.GetStreamVersionResponse
-	(*ListStreamsResponse)(nil),      // 11: reckon.gateway.v1.ListStreamsResponse
-	(*DeleteStreamResponse)(nil),     // 12: reckon.gateway.v1.DeleteStreamResponse
-	(*ProposedEvent)(nil),            // 13: reckon.gateway.v1.ProposedEvent
-	(TagMatch)(0),                    // 14: reckon.gateway.v1.TagMatch
-	(*RecordedEvent)(nil),            // 15: reckon.gateway.v1.RecordedEvent
+	(*ReadByMetadataRequest)(nil),    // 7: reckon.gateway.v1.ReadByMetadataRequest
+	(*ReadAllGlobalRequest)(nil),     // 8: reckon.gateway.v1.ReadAllGlobalRequest
+	(*AppendEventsResponse)(nil),     // 9: reckon.gateway.v1.AppendEventsResponse
+	(*ReadStreamResponse)(nil),       // 10: reckon.gateway.v1.ReadStreamResponse
+	(*GetStreamVersionResponse)(nil), // 11: reckon.gateway.v1.GetStreamVersionResponse
+	(*ListStreamsResponse)(nil),      // 12: reckon.gateway.v1.ListStreamsResponse
+	(*DeleteStreamResponse)(nil),     // 13: reckon.gateway.v1.DeleteStreamResponse
+	(*ProposedEvent)(nil),            // 14: reckon.gateway.v1.ProposedEvent
+	(TagMatch)(0),                    // 15: reckon.gateway.v1.TagMatch
+	(*RecordedEvent)(nil),            // 16: reckon.gateway.v1.RecordedEvent
 }
 var file_reckon_streams_proto_depIdxs = []int32{
-	13, // 0: reckon.gateway.v1.AppendEventsRequest.events:type_name -> reckon.gateway.v1.ProposedEvent
-	14, // 1: reckon.gateway.v1.ReadByTagsRequest.match:type_name -> reckon.gateway.v1.TagMatch
-	15, // 2: reckon.gateway.v1.ReadStreamResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
+	14, // 0: reckon.gateway.v1.AppendEventsRequest.events:type_name -> reckon.gateway.v1.ProposedEvent
+	15, // 1: reckon.gateway.v1.ReadByTagsRequest.match:type_name -> reckon.gateway.v1.TagMatch
+	16, // 2: reckon.gateway.v1.ReadStreamResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
 	0,  // 3: reckon.gateway.v1.StreamService.AppendEvents:input_type -> reckon.gateway.v1.AppendEventsRequest
 	1,  // 4: reckon.gateway.v1.StreamService.ReadStreamForward:input_type -> reckon.gateway.v1.ReadStreamRequest
 	1,  // 5: reckon.gateway.v1.StreamService.ReadStreamBackward:input_type -> reckon.gateway.v1.ReadStreamRequest
@@ -831,19 +907,21 @@ var file_reckon_streams_proto_depIdxs = []int32{
 	4,  // 9: reckon.gateway.v1.StreamService.DeleteStream:input_type -> reckon.gateway.v1.DeleteStreamRequest
 	5,  // 10: reckon.gateway.v1.StreamService.ReadByEventTypes:input_type -> reckon.gateway.v1.ReadByEventTypesRequest
 	6,  // 11: reckon.gateway.v1.StreamService.ReadByTags:input_type -> reckon.gateway.v1.ReadByTagsRequest
-	7,  // 12: reckon.gateway.v1.StreamService.ReadAllGlobal:input_type -> reckon.gateway.v1.ReadAllGlobalRequest
-	8,  // 13: reckon.gateway.v1.StreamService.AppendEvents:output_type -> reckon.gateway.v1.AppendEventsResponse
-	9,  // 14: reckon.gateway.v1.StreamService.ReadStreamForward:output_type -> reckon.gateway.v1.ReadStreamResponse
-	9,  // 15: reckon.gateway.v1.StreamService.ReadStreamBackward:output_type -> reckon.gateway.v1.ReadStreamResponse
-	15, // 16: reckon.gateway.v1.StreamService.StreamEventsForward:output_type -> reckon.gateway.v1.RecordedEvent
-	10, // 17: reckon.gateway.v1.StreamService.GetStreamVersion:output_type -> reckon.gateway.v1.GetStreamVersionResponse
-	11, // 18: reckon.gateway.v1.StreamService.ListStreams:output_type -> reckon.gateway.v1.ListStreamsResponse
-	12, // 19: reckon.gateway.v1.StreamService.DeleteStream:output_type -> reckon.gateway.v1.DeleteStreamResponse
-	9,  // 20: reckon.gateway.v1.StreamService.ReadByEventTypes:output_type -> reckon.gateway.v1.ReadStreamResponse
-	9,  // 21: reckon.gateway.v1.StreamService.ReadByTags:output_type -> reckon.gateway.v1.ReadStreamResponse
-	9,  // 22: reckon.gateway.v1.StreamService.ReadAllGlobal:output_type -> reckon.gateway.v1.ReadStreamResponse
-	13, // [13:23] is the sub-list for method output_type
-	3,  // [3:13] is the sub-list for method input_type
+	7,  // 12: reckon.gateway.v1.StreamService.ReadByMetadata:input_type -> reckon.gateway.v1.ReadByMetadataRequest
+	8,  // 13: reckon.gateway.v1.StreamService.ReadAllGlobal:input_type -> reckon.gateway.v1.ReadAllGlobalRequest
+	9,  // 14: reckon.gateway.v1.StreamService.AppendEvents:output_type -> reckon.gateway.v1.AppendEventsResponse
+	10, // 15: reckon.gateway.v1.StreamService.ReadStreamForward:output_type -> reckon.gateway.v1.ReadStreamResponse
+	10, // 16: reckon.gateway.v1.StreamService.ReadStreamBackward:output_type -> reckon.gateway.v1.ReadStreamResponse
+	16, // 17: reckon.gateway.v1.StreamService.StreamEventsForward:output_type -> reckon.gateway.v1.RecordedEvent
+	11, // 18: reckon.gateway.v1.StreamService.GetStreamVersion:output_type -> reckon.gateway.v1.GetStreamVersionResponse
+	12, // 19: reckon.gateway.v1.StreamService.ListStreams:output_type -> reckon.gateway.v1.ListStreamsResponse
+	13, // 20: reckon.gateway.v1.StreamService.DeleteStream:output_type -> reckon.gateway.v1.DeleteStreamResponse
+	10, // 21: reckon.gateway.v1.StreamService.ReadByEventTypes:output_type -> reckon.gateway.v1.ReadStreamResponse
+	10, // 22: reckon.gateway.v1.StreamService.ReadByTags:output_type -> reckon.gateway.v1.ReadStreamResponse
+	10, // 23: reckon.gateway.v1.StreamService.ReadByMetadata:output_type -> reckon.gateway.v1.ReadStreamResponse
+	10, // 24: reckon.gateway.v1.StreamService.ReadAllGlobal:output_type -> reckon.gateway.v1.ReadStreamResponse
+	14, // [14:25] is the sub-list for method output_type
+	3,  // [3:14] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
 	3,  // [3:3] is the sub-list for extension extendee
 	0,  // [0:3] is the sub-list for field type_name
@@ -861,7 +939,7 @@ func file_reckon_streams_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_reckon_streams_proto_rawDesc), len(file_reckon_streams_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

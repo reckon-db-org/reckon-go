@@ -28,6 +28,7 @@ const (
 	StreamService_DeleteStream_FullMethodName        = "/reckon.gateway.v1.StreamService/DeleteStream"
 	StreamService_ReadByEventTypes_FullMethodName    = "/reckon.gateway.v1.StreamService/ReadByEventTypes"
 	StreamService_ReadByTags_FullMethodName          = "/reckon.gateway.v1.StreamService/ReadByTags"
+	StreamService_ReadByMetadata_FullMethodName      = "/reckon.gateway.v1.StreamService/ReadByMetadata"
 	StreamService_ReadAllGlobal_FullMethodName       = "/reckon.gateway.v1.StreamService/ReadAllGlobal"
 )
 
@@ -58,6 +59,14 @@ type StreamServiceClient interface {
 	ReadByEventTypes(ctx context.Context, in *ReadByEventTypesRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error)
 	// Read events by tags across all streams.
 	ReadByTags(ctx context.Context, in *ReadByTagsRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error)
+	// Read events by a metadata key=value pair across all streams.
+	//
+	// The sanctioned primitive for cross-cutting lookups by a metadata
+	// field (e.g. an application's causation_id / correlation_id read
+	// model). O(matches) when the store declared the {meta, key} secondary
+	// index; otherwise a server-side scan. The store does not interpret the
+	// key — lineage traversal is the caller's job.
+	ReadByMetadata(ctx context.Context, in *ReadByMetadataRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error)
 	// Read all events globally, ordered by epoch_us.
 	ReadAllGlobal(ctx context.Context, in *ReadAllGlobalRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error)
 }
@@ -169,6 +178,16 @@ func (c *streamServiceClient) ReadByTags(ctx context.Context, in *ReadByTagsRequ
 	return out, nil
 }
 
+func (c *streamServiceClient) ReadByMetadata(ctx context.Context, in *ReadByMetadataRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadStreamResponse)
+	err := c.cc.Invoke(ctx, StreamService_ReadByMetadata_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *streamServiceClient) ReadAllGlobal(ctx context.Context, in *ReadAllGlobalRequest, opts ...grpc.CallOption) (*ReadStreamResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReadStreamResponse)
@@ -206,6 +225,14 @@ type StreamServiceServer interface {
 	ReadByEventTypes(context.Context, *ReadByEventTypesRequest) (*ReadStreamResponse, error)
 	// Read events by tags across all streams.
 	ReadByTags(context.Context, *ReadByTagsRequest) (*ReadStreamResponse, error)
+	// Read events by a metadata key=value pair across all streams.
+	//
+	// The sanctioned primitive for cross-cutting lookups by a metadata
+	// field (e.g. an application's causation_id / correlation_id read
+	// model). O(matches) when the store declared the {meta, key} secondary
+	// index; otherwise a server-side scan. The store does not interpret the
+	// key — lineage traversal is the caller's job.
+	ReadByMetadata(context.Context, *ReadByMetadataRequest) (*ReadStreamResponse, error)
 	// Read all events globally, ordered by epoch_us.
 	ReadAllGlobal(context.Context, *ReadAllGlobalRequest) (*ReadStreamResponse, error)
 }
@@ -243,6 +270,9 @@ func (UnimplementedStreamServiceServer) ReadByEventTypes(context.Context, *ReadB
 }
 func (UnimplementedStreamServiceServer) ReadByTags(context.Context, *ReadByTagsRequest) (*ReadStreamResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ReadByTags not implemented")
+}
+func (UnimplementedStreamServiceServer) ReadByMetadata(context.Context, *ReadByMetadataRequest) (*ReadStreamResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadByMetadata not implemented")
 }
 func (UnimplementedStreamServiceServer) ReadAllGlobal(context.Context, *ReadAllGlobalRequest) (*ReadStreamResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ReadAllGlobal not implemented")
@@ -422,6 +452,24 @@ func _StreamService_ReadByTags_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StreamService_ReadByMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadByMetadataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StreamServiceServer).ReadByMetadata(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StreamService_ReadByMetadata_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StreamServiceServer).ReadByMetadata(ctx, req.(*ReadByMetadataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _StreamService_ReadAllGlobal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReadAllGlobalRequest)
 	if err := dec(in); err != nil {
@@ -478,6 +526,10 @@ var StreamService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReadByTags",
 			Handler:    _StreamService_ReadByTags_Handler,
+		},
+		{
+			MethodName: "ReadByMetadata",
+			Handler:    _StreamService_ReadByMetadata_Handler,
 		},
 		{
 			MethodName: "ReadAllGlobal",

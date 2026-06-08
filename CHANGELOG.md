@@ -5,7 +5,20 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
-## [Unreleased]
+## [0.6.0] - 2026-06-08
+
+### Added — `(*streams.Client).ReadByMetadata`
+
+```go
+events, err := streams.ReadByMetadata(ctx, "causation_id", "evt-7", 0)
+```
+
+Reads events whose metadata `key == value` across all streams — the
+cross-cutting primitive for application-built causation/correlation read
+models. O(matches) when the store declared the `{meta, key}` secondary
+index (reckon-db 5.0.0+), else a server-side scan; the store does not
+interpret the key. Mirrors `ReadByTags` / `ReadByEventTypes`. Stubs
+regenerated from reckon-proto 0.6.0 (`StreamService.ReadByMetadata`).
 
 ### Removed — causation package (BREAKING)
 

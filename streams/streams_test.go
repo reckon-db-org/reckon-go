@@ -47,6 +47,10 @@ type fakeStreamServer struct {
 	byTagsResp   *pb.ReadStreamResponse
 	byTagsErr    error
 
+	gotByMetaReq *pb.ReadByMetadataRequest
+	byMetaResp   *pb.ReadStreamResponse
+	byMetaErr    error
+
 	globalResp *pb.ReadStreamResponse
 	globalErr  error
 
@@ -106,6 +110,13 @@ func (s *fakeStreamServer) ReadByTags(_ context.Context, req *pb.ReadByTagsReque
 		return nil, s.byTagsErr
 	}
 	return s.byTagsResp, nil
+}
+func (s *fakeStreamServer) ReadByMetadata(_ context.Context, req *pb.ReadByMetadataRequest) (*pb.ReadStreamResponse, error) {
+	s.gotByMetaReq = req
+	if s.byMetaErr != nil {
+		return nil, s.byMetaErr
+	}
+	return s.byMetaResp, nil
 }
 func (s *fakeStreamServer) ReadAllGlobal(_ context.Context, _ *pb.ReadAllGlobalRequest) (*pb.ReadStreamResponse, error) {
 	if s.globalErr != nil {
@@ -264,6 +275,30 @@ func TestReadByEventTypes(t *testing.T) {
 	}
 }
 
+func TestReadByMetadata(t *testing.T) {
+	srv := &fakeStreamServer{byMetaResp: &pb.ReadStreamResponse{
+		Events: []*pb.RecordedEvent{{EventId: "e1", EventType: "t1"}},
+	}}
+	c, cleanup := newTestClient(t, srv)
+	defer cleanup()
+	got, err := c.ReadByMetadata(context.Background(), "causation_id", "evt-7", 500)
+	if err != nil {
+		t.Fatalf("ReadByMetadata: %v", err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("got %d want 1", len(got))
+	}
+	if srv.gotByMetaReq.GetKey() != "causation_id" || srv.gotByMetaReq.GetValue() != "evt-7" {
+		t.Errorf("req key/value: %q/%q", srv.gotByMetaReq.GetKey(), srv.gotByMetaReq.GetValue())
+	}
+	if srv.gotByMetaReq.GetBatchSize() != 500 {
+		t.Errorf("batch: %d", srv.gotByMetaReq.GetBatchSize())
+	}
+	if srv.gotByMetaReq.GetStoreId() != "test_store" {
+		t.Errorf("store: %q", srv.gotByMetaReq.GetStoreId())
+	}
+}
+
 func TestReadByTags_MatchMapping(t *testing.T) {
 	cases := []struct {
 		in   TagMatch
@@ -372,6 +407,7 @@ func TestAllRPCErrors(t *testing.T) {
 		deleteErr:   status.Error(codes.Internal, "x"),
 		byTypesErr:  status.Error(codes.Internal, "x"),
 		byTagsErr:   status.Error(codes.Internal, "x"),
+		byMetaErr:   status.Error(codes.Internal, "x"),
 		globalErr:   status.Error(codes.Internal, "x"),
 	}
 	c, cleanup := newTestClient(t, srv)
@@ -386,6 +422,7 @@ func TestAllRPCErrors(t *testing.T) {
 		"Delete":   func() error { return c.Delete(ctx, "s") },
 		"ByTypes":  func() error { _, e := c.ReadByEventTypes(ctx, []string{"t"}, 0); return e },
 		"ByTags":   func() error { _, e := c.ReadByTags(ctx, []string{"t"}, TagMatchAny, 0); return e },
+		"ByMeta":   func() error { _, e := c.ReadByMetadata(ctx, "k", "v", 0); return e },
 		"Global":   func() error { _, e := c.ReadAllGlobal(ctx, 0, 0); return e },
 	} {
 		if err := fn(); err == nil {

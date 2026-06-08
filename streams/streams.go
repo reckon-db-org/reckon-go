@@ -332,6 +332,27 @@ func (c *Client) ReadByTags(ctx context.Context, tags []string, match TagMatch, 
 	return recordedSliceFromProto(resp.GetEvents()), nil
 }
 
+// ReadByMetadata returns events whose metadata key == value across all
+// streams in the store. batch is a server-side batch-size hint; pass 0 to
+// let the server choose.
+//
+// This is the cross-cutting primitive for application-built
+// causation/correlation read models (e.g. key "causation_id"). It is
+// O(matches) when the store declared the {meta, key} secondary index,
+// otherwise a server-side scan. The store does not interpret the key.
+func (c *Client) ReadByMetadata(ctx context.Context, key, value string, batch uint64, opts ...grpc.CallOption) ([]RecordedEvent, error) {
+	resp, err := c.raw.ReadByMetadata(ctx, &pb.ReadByMetadataRequest{
+		StoreId:   c.store,
+		Key:       key,
+		Value:     value,
+		BatchSize: batch,
+	}, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return recordedSliceFromProto(resp.GetEvents()), nil
+}
+
 // ReadAllGlobal returns up to limit events from the store, ordered
 // globally by epoch_us, starting at offset.
 func (c *Client) ReadAllGlobal(ctx context.Context, offset, limit uint64, opts ...grpc.CallOption) ([]RecordedEvent, error) {
