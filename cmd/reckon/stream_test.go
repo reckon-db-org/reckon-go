@@ -187,3 +187,43 @@ func TestParseGlobalFlagsAndAliases(t *testing.T) {
 		t.Errorf("rest wrong: %v", rest)
 	}
 }
+
+func TestTransportDefaultsToTLS(t *testing.T) {
+	o, _, err := parseGlobal([]string{"streams", "read", "x"})
+	if err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	if o.plaintext {
+		t.Fatal("plaintext must not be the default")
+	}
+	dialOpts, err := o.transport()
+	if err != nil {
+		t.Fatalf("transport: %v", err)
+	}
+	if dialOpts != nil {
+		t.Errorf("default transport should defer to Connect's TLS default, got %d opts", len(dialOpts))
+	}
+}
+
+func TestTransportPlaintextExplicit(t *testing.T) {
+	o, _, err := parseGlobal([]string{"--plaintext", "streams", "read", "x"})
+	if err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	if !o.plaintext {
+		t.Fatal("--plaintext not applied")
+	}
+	dialOpts, err := o.transport()
+	if err != nil || len(dialOpts) != 1 {
+		t.Fatalf("expected single insecure dial opt, got %v / %v", dialOpts, err)
+	}
+}
+
+func TestPlaintextConflictsWithTLSFlags(t *testing.T) {
+	if _, _, err := parseGlobal([]string{"--plaintext", "--ca", "x.pem", "streams", "read", "x"}); err == nil {
+		t.Fatal("expected --plaintext/--ca conflict error")
+	}
+	if _, _, err := parseGlobal([]string{"--plaintext", "--server-name", "gw", "streams", "read", "x"}); err == nil {
+		t.Fatal("expected --plaintext/--server-name conflict error")
+	}
+}

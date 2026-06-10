@@ -2,9 +2,14 @@ package reckon
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
+	"os"
 	"strings"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
@@ -26,13 +31,16 @@ type Client struct {
 // active re-resolution may pass an explicit scheme (e.g. "dns:///host:port")
 // to override.
 //
-// Currently uses insecure transport. TLS + capability-token auth are
-// follow-ups, tracked alongside the gateway's auth surface.
+// Transport security: when no DialOptions are given, the connection uses
+// TLS verified against the system root pool. Plaintext is an explicit
+// opt-in via reckon.Insecure() — never a silent default (dialing a
+// plaintext gateway over default TLS fails loudly with a handshake
+// error). Custom trust anchors via reckon.TLSWithCA. Callers passing
+// their own DialOptions own the transport credentials entirely, exactly
+// as with grpc.NewClient.
 func Connect(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Client, error) {
 	if len(opts) == 0 {
-		opts = []grpc.DialOption{
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-		}
+		opts = []grpc.DialOption{defaultTLS()}
 	}
 	target := endpoint
 	if !strings.Contains(endpoint, "://") {
@@ -43,6 +51,52 @@ func Connect(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Cl
 		return nil, err
 	}
 	return &Client{conn: conn}, nil
+}
+
+// Insecure returns a DialOption selecting plaintext, unauthenticated
+// transport. Anyone on the network path can read and tamper with the
+// traffic — lab and loopback use only.
+func Insecure() grpc.DialOption {
+	return grpc.WithTransportCredentials(insecure.NewCredentials())
+}
+
+// TLSWithCA returns a DialOption that verifies the gateway against the
+// PEM bundle at caFile instead of the system roots (self-signed or
+// private-CA deployments). serverName overrides the hostname used for
+// certificate verification (and SNI); pass "" to verify against the
+// dialed host.
+func TLSWithCA(caFile, serverName string) (grpc.DialOption, error) {
+	pem, err := os.ReadFile(caFile)
+	if err != nil {
+		return nil, fmt.Errorf("read CA bundle: %w", err)
+	}
+	pool := x509.NewCertPool()
+	if !pool.AppendCertsFromPEM(pem) {
+		return nil, fmt.Errorf("no certificates found in %s", caFile)
+	}
+	cfg := &tls.Config{
+		RootCAs:    pool,
+		ServerName: serverName,
+		MinVersion: tls.VersionTLS12,
+	}
+	return grpc.WithTransportCredentials(credentials.NewTLS(cfg)), nil
+}
+
+// TLSWithServerName returns a DialOption using the system root pool with
+// an explicit verification/SNI hostname. Useful when dialing by IP while
+// the gateway certificate carries a DNS name.
+func TLSWithServerName(serverName string) grpc.DialOption {
+	cfg := &tls.Config{
+		ServerName: serverName,
+		MinVersion: tls.VersionTLS12,
+	}
+	return grpc.WithTransportCredentials(credentials.NewTLS(cfg))
+}
+
+func defaultTLS() grpc.DialOption {
+	return grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}))
 }
 
 // Close releases the underlying gRPC connection. Idempotent.

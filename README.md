@@ -6,12 +6,29 @@ Idiomatic Go client for the [ReckonDB](https://codeberg.org/reckon-db-org/reckon
 ```go
 import "codeberg.org/reckon-db-org/reckon-go"
 
-c, err := reckon.Connect(ctx, "beam01.lab:50051")
+c, err := reckon.Connect(ctx, "gateway.example.org:50051") // TLS, system roots (the default)
 if err != nil { ... }
 defer c.Close()
 
 stores, err := c.Stores().List(ctx)
 ```
+
+## Transport security
+
+Since 0.7.0 `Connect` defaults to TLS verified against the system root
+pool. Plaintext is an explicit opt-in, never a silent default:
+
+```go
+// Lab gateway without TLS (e.g. beam01.lab:50051):
+c, err := reckon.Connect(ctx, "beam01.lab:50051", reckon.Insecure())
+
+// Self-signed / private-CA gateway:
+opt, err := reckon.TLSWithCA("/etc/reckon/ca.pem", "")
+c, err := reckon.Connect(ctx, "gateway.internal:50051", opt)
+```
+
+The CLI mirrors this: TLS by default, `--plaintext` for lab gateways,
+`--ca` / `--server-name` for private trust anchors.
 
 ## Status
 

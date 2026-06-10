@@ -7,7 +7,12 @@
 //
 //	import "codeberg.org/reckon-db-org/reckon-go"
 //
-//	c, err := reckon.Connect(ctx, "beam01.lab:50051")
+//	c, err := reckon.Connect(ctx, "gateway.example.org:50051")
+//
+// Connect defaults to TLS against the system root pool. Plaintext lab
+// gateways need the explicit opt-in:
+//
+//	c, err := reckon.Connect(ctx, "beam01.lab:50051", reckon.Insecure())
 //
 // # Top-level facade
 //

@@ -17,6 +17,7 @@ import (
 
 	reckon "codeberg.org/reckon-db-org/reckon-go"
 	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"google.golang.org/grpc"
 )
 
 // version is stamped at build time via -ldflags "-X main.version=<tag>"
@@ -37,6 +38,9 @@ type opts struct {
 	bytes       encode.Bytes
 	pretty      bool
 	showVersion bool
+	plaintext   bool
+	caFile      string
+	serverName  string
 }
 
 // handler is one command leaf: it owns its command-flags (parsed from args),
@@ -89,6 +93,12 @@ func parseGlobal(argv []string) (*opts, []string, error) {
 	pretty := fs.Bool("pretty", false, "pretty-print unary JSON")
 	verLong := fs.Bool("version", false, "print client version and exit")
 	verShort := fs.Bool("V", false, "print client version and exit (alias)")
+	plaintext := fs.Bool("plaintext", os.Getenv("RECKON_PLAINTEXT") == "1",
+		"dial without TLS (unauthenticated, tamperable; lab/loopback only)")
+	caFile := fs.String("ca", def("RECKON_CA", ""),
+		"PEM bundle to verify the gateway against (instead of system roots)")
+	serverName := fs.String("server-name", def("RECKON_SERVER_NAME", ""),
+		"override the TLS verification/SNI hostname")
 
 	if err := fs.Parse(argv); err != nil {
 		return nil, nil, usageErr("flag error: %v", err)
@@ -105,6 +115,12 @@ func parseGlobal(argv []string) (*opts, []string, error) {
 		bytes:       bm,
 		pretty:      *pretty,
 		showVersion: *verLong || *verShort,
+		plaintext:   *plaintext,
+		caFile:      *caFile,
+		serverName:  *serverName,
+	}
+	if o.plaintext && (o.caFile != "" || o.serverName != "") {
+		return nil, nil, usageErr("--plaintext conflicts with --ca/--server-name")
 	}
 	return o, fs.Args(), nil
 }
@@ -150,13 +166,36 @@ func (o *opts) requireStore() error {
 	return nil
 }
 
-// dial opens a client for the configured endpoint.
+// dial opens a client for the configured endpoint. Default transport is
+// TLS against the system roots; --plaintext is the explicit opt-out and
+// --ca/--server-name cover self-signed / private-CA gateways.
 func (o *opts) dial(ctx context.Context) (*reckon.Client, error) {
-	c, err := reckon.Connect(ctx, o.endpoint)
+	dialOpts, err := o.transport()
+	if err != nil {
+		return nil, &cliError{"usage", err.Error(), -1, 2}
+	}
+	c, err := reckon.Connect(ctx, o.endpoint, dialOpts...)
 	if err != nil {
 		return nil, &cliError{"unreachable", err.Error(), -1, 6}
 	}
 	return c, nil
+}
+
+func (o *opts) transport() ([]grpc.DialOption, error) {
+	switch {
+	case o.plaintext:
+		return []grpc.DialOption{reckon.Insecure()}, nil
+	case o.caFile != "":
+		opt, err := reckon.TLSWithCA(o.caFile, o.serverName)
+		if err != nil {
+			return nil, err
+		}
+		return []grpc.DialOption{opt}, nil
+	case o.serverName != "":
+		return []grpc.DialOption{reckon.TLSWithServerName(o.serverName)}, nil
+	default:
+		return nil, nil // Connect's default: TLS, system roots
+	}
 }
 
 // rpcCtx derives a per-RPC deadline from the signal-aware parent.

@@ -5,6 +5,32 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
+## [0.7.0] - 2026-06-10
+
+### Security — TLS is the default transport (BREAKING for plaintext gateways)
+
+Fixes the 2026-06-10 audit finding: `Connect` silently injected
+`insecure.NewCredentials()` when no DialOptions were given, so every
+SDK consumer and the whole CLI ran plaintext, unauthenticated gRPC —
+including destructive admin RPCs — with no way to enable TLS.
+
+- **SDK:** `Connect` with no DialOptions now uses TLS verified
+  against the system root pool. Plaintext is an explicit opt-in:
+  `reckon.Connect(ctx, ep, reckon.Insecure())`. New helpers:
+  `reckon.TLSWithCA(caFile, serverName)` (self-signed / private-CA
+  gateways) and `reckon.TLSWithServerName(name)` (dial by IP, verify
+  by DNS name). Callers passing their own DialOptions are unaffected.
+- **CLI:** new global flags `--plaintext` (env `RECKON_PLAINTEXT=1`),
+  `--ca` (env `RECKON_CA`), `--server-name` (env
+  `RECKON_SERVER_NAME`). Default is TLS + system roots;
+  `--plaintext` conflicts with the TLS flags.
+
+**Migration:** today's lab gateways (`beamNN:50051`) serve plaintext
+gRPC, so existing invocations need `--plaintext` (CLI) or
+`reckon.Insecure()` (SDK) until the gateway grows TLS. Dialing a
+plaintext gateway with the new default fails loudly with a TLS
+handshake error instead of silently downgrading.
+
 ## [0.6.0] - 2026-06-08
 
 ### Added — `(*streams.Client).ReadByMetadata`

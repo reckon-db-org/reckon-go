@@ -28,7 +28,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	c, err := reckon.Connect(ctx, *endpoint)
+	c, err := reckon.Connect(ctx, *endpoint, reckon.Insecure()) // lab gateway: plaintext gRPC
 	if err != nil {
 		log.Fatalf("connect: %v", err)
 	}
