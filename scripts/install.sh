@@ -6,9 +6,10 @@
 # Environment:
 #   RECKON_VERSION   release tag to install (default: latest)
 #   RECKON_BIN_DIR   install directory (default: $HOME/.local/bin)
-#   RECKON_TOKEN     Codeberg access token — REQUIRED while the repo is private
-#                    (also read from CODEBERG_TOKEN). Generate at
-#                    Codeberg → Settings → Applications → Access Tokens (read).
+#   RECKON_TOKEN     Codeberg access token — OPTIONAL. The repo is public, so no
+#                    token is needed; set one only to raise API rate limits or if
+#                    the repo is ever made private (also read from CODEBERG_TOKEN).
+#                    Generate at Codeberg → Settings → Applications → Access Tokens (read).
 set -eu
 
 REPO="reckon-db-org/reckon-go"
@@ -24,7 +25,7 @@ need() { command -v "$1" >/dev/null 2>&1 || die "missing required command: $1"; 
 need curl
 need sha256sum || need shasum
 
-# curl auth header (needed for a private repo).
+# curl auth header (optional — only used if a token is set).
 AUTH=""
 [ -n "$TOKEN" ] && AUTH="Authorization: token $TOKEN"
 fetch() { # fetch <url> <outfile|->
@@ -51,7 +52,7 @@ API="https://$HOST/api/v1/repos/$REPO/releases"
 # Resolve "latest" to a concrete tag via the API.
 if [ "$VERSION" = "latest" ]; then
   tmp_rel="$(mktemp)"
-  fetch "$API/latest" "$tmp_rel" || die "could not query latest release (private repo? set RECKON_TOKEN)"
+  fetch "$API/latest" "$tmp_rel" || die "could not query latest release (network issue, or rate-limited — set RECKON_TOKEN to raise the limit)"
   VERSION="$(grep -o '"tag_name":"[^"]*"' "$tmp_rel" | head -1 | cut -d'"' -f4)"
   rm -f "$tmp_rel"
   [ -n "$VERSION" ] || die "could not determine latest version"

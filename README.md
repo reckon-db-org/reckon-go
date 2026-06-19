@@ -66,13 +66,21 @@ release with `RECKON_VERSION=vX.Y.Z`). Verifies the SHA256 before installing.
 `install.sh` then sends it as an `Authorization` header for both the script
 fetch and the download.)
 
-**With Go:**
+**With Go** (the repo is public, so this is all you need):
+
+```bash
+go install codeberg.org/reckon-db-org/reckon-go/cmd/reckon@latest
+```
+
+<details>
+<summary>If the repo is ever made private</summary>
 
 ```bash
 go env -w GOPRIVATE=codeberg.org/reckon-db-org
 git config --global url."git@codeberg.org:".insteadOf "https://codeberg.org/"
 go install codeberg.org/reckon-db-org/reckon-go/cmd/reckon@latest
 ```
+</details>
 
 ```bash
 reckon --version
