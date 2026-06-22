@@ -5,6 +5,32 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
+## [0.8.0] - 2026-06-22
+
+### Added — `dcb.EventType(t string) TagFilter`
+
+New `TagFilter` constructor that matches events by their `event_type`
+field rather than (or in addition to) their tags. Maps to proto field 5
+(`event_type_match`) in `reckon_dcb.proto` 0.7.0.
+
+```go
+// Scope a DCB context to a specific event type:
+d.Read(ctx, dcb.EventType("inventory_reserved_v1"), 100)
+
+// Compose with tag filters:
+d.Read(ctx, dcb.And(
+    dcb.EventType("order_placed_v1"),
+    dcb.MatchAny("customer:42"),
+), 100)
+```
+
+Requires backing reckon-db 5.2.0+ for the `[by_event_type]` index.
+Pre-5.2.0 events have no index entry and will not match.
+
+- `genproto/gatewayv1/reckon_dcb.pb.go` regenerated from reckon-proto 0.7.0
+  (field 5 `event_type_match string` in `TagFilter` oneof).
+- Two new unit tests: `TestEventTypeToProto`, `TestAndWithEventTypeToProto`.
+
 ## [0.7.0] - 2026-06-10
 
 ### Security — TLS is the default transport (BREAKING for plaintext gateways)

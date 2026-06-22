@@ -36,6 +36,33 @@ func TestMatchAllToProto(t *testing.T) {
 	}
 }
 
+func TestEventTypeToProto(t *testing.T) {
+	got := EventType("inventory_reserved_v1").toProto()
+	want := &pb.TagFilter{Kind: &pb.TagFilter_EventTypeMatch{
+		EventTypeMatch: "inventory_reserved_v1",
+	}}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("EventType: got %+v want %+v", got, want)
+	}
+}
+
+func TestAndWithEventTypeToProto(t *testing.T) {
+	f := And(EventType("order_placed_v1"), MatchAny("customer:42"))
+	got := f.toProto()
+	conj, ok := got.GetKind().(*pb.TagFilter_Conjunction)
+	if !ok {
+		t.Fatalf("expected Conjunction at root, got %T", got.GetKind())
+	}
+	if n := len(conj.Conjunction.GetFilters()); n != 2 {
+		t.Fatalf("expected 2 sub-filters, got %d", n)
+	}
+	_, ok = conj.Conjunction.Filters[0].GetKind().(*pb.TagFilter_EventTypeMatch)
+	if !ok {
+		t.Fatalf("sub[0]: expected EventTypeMatch, got %T",
+			conj.Conjunction.Filters[0].GetKind())
+	}
+}
+
 func TestAndOrNestingToProto(t *testing.T) {
 	// {or_, [{and_, [match_any [r], match_all [g]]}, match_any [c]]}
 	f := Or(

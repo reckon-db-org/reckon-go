@@ -21,23 +21,29 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TagFilter is a recursive predicate over an event's tag set.
+// TagFilter is a recursive predicate over an event's tag set or type.
 //
-// Two leaf shapes (matching against the event's own tags) and two
-// compound shapes (combining sub-filters):
+// Three leaf shapes and two compound shapes:
 //
-//	match_any:    event matches if it carries ANY of the listed tags
-//	match_all:    event matches if it carries ALL of the listed tags
-//	conjunction:  event matches if ALL sub-filters match  (and_)
-//	disjunction:  event matches if ANY sub-filter matches (or_)
+//	match_any:         event matches if it carries ANY of the listed tags
+//	match_all:         event matches if it carries ALL of the listed tags
+//	event_type_match:  event matches if its event_type equals the value
+//	conjunction:       event matches if ALL sub-filters match  (and_)
+//	disjunction:       event matches if ANY sub-filter matches (or_)
 //
 // Names avoid the `and_`/`or_` reserved-word collisions while
 // preserving the Erlang term semantics one-to-one:
 //
-//	match_any   <-> {any_of,  [Tag]}
-//	match_all   <-> {all_of,  [Tag]}
-//	conjunction <-> {and_,    [TagFilter]}
-//	disjunction <-> {or_,     [TagFilter]}
+//	match_any         <-> {any_of,     [Tag]}
+//	match_all         <-> {all_of,     [Tag]}
+//	event_type_match  <-> {event_type, binary()}
+//	conjunction       <-> {and_,       [TagFilter]}
+//	disjunction       <-> {or_,        [TagFilter]}
+//
+// Requires backing ReckonDB 5.2.0+ for event_type_match (the
+// [by_event_type] index was added in that release). Older backings
+// will evaluate the filter correctly only for events written after
+// the upgrade; pre-5.2.0 events have no index entry.
 type TagFilter struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Kind:
@@ -46,6 +52,7 @@ type TagFilter struct {
 	//	*TagFilter_MatchAll
 	//	*TagFilter_Conjunction
 	//	*TagFilter_Disjunction
+	//	*TagFilter_EventTypeMatch
 	Kind          isTagFilter_Kind `protobuf_oneof:"kind"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -124,6 +131,15 @@ func (x *TagFilter) GetDisjunction() *FilterList {
 	return nil
 }
 
+func (x *TagFilter) GetEventTypeMatch() string {
+	if x != nil {
+		if x, ok := x.Kind.(*TagFilter_EventTypeMatch); ok {
+			return x.EventTypeMatch
+		}
+	}
+	return ""
+}
+
 type isTagFilter_Kind interface {
 	isTagFilter_Kind()
 }
@@ -144,6 +160,10 @@ type TagFilter_Disjunction struct {
 	Disjunction *FilterList `protobuf:"bytes,4,opt,name=disjunction,proto3,oneof"`
 }
 
+type TagFilter_EventTypeMatch struct {
+	EventTypeMatch string `protobuf:"bytes,5,opt,name=event_type_match,json=eventTypeMatch,proto3,oneof"`
+}
+
 func (*TagFilter_MatchAny) isTagFilter_Kind() {}
 
 func (*TagFilter_MatchAll) isTagFilter_Kind() {}
@@ -151,6 +171,8 @@ func (*TagFilter_MatchAll) isTagFilter_Kind() {}
 func (*TagFilter_Conjunction) isTagFilter_Kind() {}
 
 func (*TagFilter_Disjunction) isTagFilter_Kind() {}
+
+func (*TagFilter_EventTypeMatch) isTagFilter_Kind() {}
 
 type TagList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -625,12 +647,13 @@ var File_reckon_dcb_proto protoreflect.FileDescriptor
 
 const file_reckon_dcb_proto_rawDesc = "" +
 	"\n" +
-	"\x10reckon_dcb.proto\x12\x11reckon.gateway.v1\x1a\x13reckon_shared.proto\"\x8f\x02\n" +
+	"\x10reckon_dcb.proto\x12\x11reckon.gateway.v1\x1a\x13reckon_shared.proto\"\xbb\x02\n" +
 	"\tTagFilter\x129\n" +
 	"\tmatch_any\x18\x01 \x01(\v2\x1a.reckon.gateway.v1.TagListH\x00R\bmatchAny\x129\n" +
 	"\tmatch_all\x18\x02 \x01(\v2\x1a.reckon.gateway.v1.TagListH\x00R\bmatchAll\x12A\n" +
 	"\vconjunction\x18\x03 \x01(\v2\x1d.reckon.gateway.v1.FilterListH\x00R\vconjunction\x12A\n" +
-	"\vdisjunction\x18\x04 \x01(\v2\x1d.reckon.gateway.v1.FilterListH\x00R\vdisjunctionB\x06\n" +
+	"\vdisjunction\x18\x04 \x01(\v2\x1d.reckon.gateway.v1.FilterListH\x00R\vdisjunction\x12*\n" +
+	"\x10event_type_match\x18\x05 \x01(\tH\x00R\x0eeventTypeMatchB\x06\n" +
 	"\x04kind\"\x1d\n" +
 	"\aTagList\x12\x12\n" +
 	"\x04tags\x18\x01 \x03(\tR\x04tags\"D\n" +
@@ -726,6 +749,7 @@ func file_reckon_dcb_proto_init() {
 		(*TagFilter_MatchAll)(nil),
 		(*TagFilter_Conjunction)(nil),
 		(*TagFilter_Disjunction)(nil),
+		(*TagFilter_EventTypeMatch)(nil),
 	}
 	file_reckon_dcb_proto_msgTypes[4].OneofWrappers = []any{
 		(*AppendIfNoTagMatchesResponse_Committed)(nil),

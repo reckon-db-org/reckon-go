@@ -50,10 +50,10 @@ import (
 // you're trying to write an event that must be the FIRST match.
 const SeqCutoffSawNothing int64 = -1
 
-// TagFilter is a recursive predicate over an event's tag set.
+// TagFilter is a recursive predicate over an event's tag set or type.
 //
-// Construct via [MatchAny], [MatchAll], [And], [Or]. Filters compose
-// to arbitrary depth.
+// Construct via [MatchAny], [MatchAll], [EventType], [And], [Or].
+// Filters compose to arbitrary depth.
 type TagFilter interface {
 	toProto() *pb.TagFilter
 	isTagFilter()
@@ -61,13 +61,15 @@ type TagFilter interface {
 
 type matchAny struct{ tags []string }
 type matchAll struct{ tags []string }
+type eventTypeMatch struct{ eventType string }
 type conjunction struct{ subs []TagFilter }
 type disjunction struct{ subs []TagFilter }
 
-func (matchAny) isTagFilter()    {}
-func (matchAll) isTagFilter()    {}
-func (conjunction) isTagFilter() {}
-func (disjunction) isTagFilter() {}
+func (matchAny) isTagFilter()       {}
+func (matchAll) isTagFilter()       {}
+func (eventTypeMatch) isTagFilter() {}
+func (conjunction) isTagFilter()    {}
+func (disjunction) isTagFilter()    {}
 
 // MatchAny matches an event whose tag set contains ANY of tags.
 // Equivalent to the Erlang term {any_of, [Tag]}.
@@ -76,6 +78,11 @@ func MatchAny(tags ...string) TagFilter { return matchAny{tags: tags} }
 // MatchAll matches an event whose tag set contains ALL of tags.
 // Equivalent to the Erlang term {all_of, [Tag]}.
 func MatchAll(tags ...string) TagFilter { return matchAll{tags: tags} }
+
+// EventType matches an event whose event_type equals t.
+// Equivalent to the Erlang term {event_type, binary()}.
+// Requires backing reckon-db 5.2.0+ ([by_event_type] index).
+func EventType(t string) TagFilter { return eventTypeMatch{eventType: t} }
 
 // And matches an event satisfying ALL of filters. Equivalent to the
 // Erlang term {and_, [TagFilter]}.
@@ -93,6 +100,11 @@ func (f matchAny) toProto() *pb.TagFilter {
 func (f matchAll) toProto() *pb.TagFilter {
 	return &pb.TagFilter{Kind: &pb.TagFilter_MatchAll{
 		MatchAll: &pb.TagList{Tags: f.tags},
+	}}
+}
+func (f eventTypeMatch) toProto() *pb.TagFilter {
+	return &pb.TagFilter{Kind: &pb.TagFilter_EventTypeMatch{
+		EventTypeMatch: f.eventType,
 	}}
 }
 func (f conjunction) toProto() *pb.TagFilter {
