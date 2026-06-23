@@ -5,6 +5,37 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
+## [0.9.0] - 2026-06-23
+
+### Added — `dcb.Client.CccReadByPayload` and `CccReadByPayloadHash`
+
+Two new methods on `dcb.Client` for CCC (Command Context Consistency)
+payload-indexed reads, backed by the new gRPC RPCs in reckon-proto 0.8.0.
+
+```go
+// Events where data["account_id"] == "acc-42":
+events, err := d.CccReadByPayload(ctx, "account_id", "acc-42", 100)
+
+// Events where data["flight_id"] == "FL-001" AND data["seat_no"] == "14A":
+events, err := d.CccReadByPayloadHash(ctx,
+    []string{"flight_id", "seat_no"},
+    []string{"FL-001", "14A"},
+    100,
+)
+```
+
+Use these to build a CCC consistency context over JSON payload field values
+rather than tags. Combine with `Append` to enforce cross-stream invariants
+keyed by payload content (e.g. "all credit events for account X").
+
+Requires a `{ccc, key}` (or `{ccc_hash, keys}`) index declared in the store
+config and reckon-db 5.4.0+ / reckon-gateway 0.13.1+.
+
+- `genproto/gatewayv1/reckon_dcb.pb.go` and `reckon_dcb_grpc.pb.go`
+  regenerated from reckon-proto 0.8.0.
+- New file `dcb/ccc.go` — the two CCC methods.
+- Four new unit tests in `dcb/ccc_test.go`.
+
 ## [0.8.0] - 2026-06-22
 
 ### Added — `dcb.EventType(t string) TagFilter`

@@ -134,7 +134,9 @@ type ProposedEvent struct {
 	EventType string `protobuf:"bytes,2,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
 	// Event payload as JSON bytes.
 	Data []byte `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
-	// Event metadata as JSON bytes (correlation_id, causation_id, etc.).
+	// Event metadata as JSON bytes. See "Reserved metadata keys" above for
+	// the cross-language causation_id / correlation_id / conversation_id
+	// convention.
 	Metadata []byte `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Optional tags for cross-stream querying.
 	Tags []string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
@@ -227,18 +229,20 @@ func (x *ProposedEvent) GetMetadataContentType() string {
 
 // RecordedEvent is a persisted event read from a stream.
 type RecordedEvent struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	EventId             string                 `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	EventType           string                 `protobuf:"bytes,2,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
-	StreamId            string                 `protobuf:"bytes,3,opt,name=stream_id,json=streamId,proto3" json:"stream_id,omitempty"`
-	Version             uint64                 `protobuf:"varint,4,opt,name=version,proto3" json:"version,omitempty"`
-	Data                []byte                 `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
-	Metadata            []byte                 `protobuf:"bytes,6,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Tags                []string               `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
-	Timestamp           int64                  `protobuf:"varint,8,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	EpochUs             int64                  `protobuf:"varint,9,opt,name=epoch_us,json=epochUs,proto3" json:"epoch_us,omitempty"`
-	DataContentType     string                 `protobuf:"bytes,10,opt,name=data_content_type,json=dataContentType,proto3" json:"data_content_type,omitempty"`
-	MetadataContentType string                 `protobuf:"bytes,11,opt,name=metadata_content_type,json=metadataContentType,proto3" json:"metadata_content_type,omitempty"`
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	EventId   string                 `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	EventType string                 `protobuf:"bytes,2,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	StreamId  string                 `protobuf:"bytes,3,opt,name=stream_id,json=streamId,proto3" json:"stream_id,omitempty"`
+	Version   uint64                 `protobuf:"varint,4,opt,name=version,proto3" json:"version,omitempty"`
+	Data      []byte                 `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
+	// Event metadata as JSON bytes. See "Reserved metadata keys" above
+	// (causation_id / correlation_id / conversation_id).
+	Metadata            []byte   `protobuf:"bytes,6,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Tags                []string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
+	Timestamp           int64    `protobuf:"varint,8,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	EpochUs             int64    `protobuf:"varint,9,opt,name=epoch_us,json=epochUs,proto3" json:"epoch_us,omitempty"`
+	DataContentType     string   `protobuf:"bytes,10,opt,name=data_content_type,json=dataContentType,proto3" json:"data_content_type,omitempty"`
+	MetadataContentType string   `protobuf:"bytes,11,opt,name=metadata_content_type,json=metadataContentType,proto3" json:"metadata_content_type,omitempty"`
 	// Tamper-resistance fields (added in reckon-gateway 0.2.0,
 	// corresponding to reckon-db / reckon-gater 2.1.0).
 	//

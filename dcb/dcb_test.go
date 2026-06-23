@@ -127,7 +127,7 @@ func (s *fakeDcbServer) ReadDcbContext(_ context.Context, req *pb.ReadDcbContext
 	return s.readResp, s.readErr
 }
 
-func newTestClient(t *testing.T, srv *fakeDcbServer) (*Client, func()) {
+func newTestClientWithServer(t *testing.T, srv pb.DcbServiceServer) (*Client, func()) {
 	t.Helper()
 	lis := bufconn.Listen(1024 * 1024)
 	gs := grpc.NewServer()
@@ -149,6 +149,11 @@ func newTestClient(t *testing.T, srv *fakeDcbServer) (*Client, func()) {
 		gs.Stop()
 		_ = lis.Close()
 	}
+}
+
+func newTestClient(t *testing.T, srv *fakeDcbServer) (*Client, func()) {
+	t.Helper()
+	return newTestClientWithServer(t, srv)
 }
 
 func TestAppendCommitted(t *testing.T) {

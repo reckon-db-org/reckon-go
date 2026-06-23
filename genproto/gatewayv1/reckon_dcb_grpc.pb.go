@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	DcbService_AppendIfNoTagMatches_FullMethodName = "/reckon.gateway.v1.DcbService/AppendIfNoTagMatches"
 	DcbService_ReadDcbContext_FullMethodName       = "/reckon.gateway.v1.DcbService/ReadDcbContext"
+	DcbService_CccReadByPayload_FullMethodName     = "/reckon.gateway.v1.DcbService/CccReadByPayload"
+	DcbService_CccReadByPayloadHash_FullMethodName = "/reckon.gateway.v1.DcbService/CccReadByPayloadHash"
 )
 
 // DcbServiceClient is the client API for DcbService service.
@@ -43,6 +45,7 @@ const (
 //
 // Requires backing ReckonDB cluster on reckon-db 3.1.1+
 // (reckon_gater 2.3.1+). Older backings surface UNIMPLEMENTED.
+// TagFilter.event_type_match requires reckon-db 5.2.0+.
 type DcbServiceClient interface {
 	// Conditionally append events under the DCB pseudo-stream.
 	//
@@ -72,6 +75,15 @@ type DcbServiceClient interface {
 	// AppendIfNoTagMatches with a forward read of the matching seqs,
 	// scoped to the DCB pseudo-stream only.
 	ReadDcbContext(ctx context.Context, in *ReadDcbContextRequest, opts ...grpc.CallOption) (*ReadDcbContextResponse, error)
+	// CccReadByPayload returns events where data[key] == value across
+	// all streams in the store, ordered by position ascending.
+	// Requires a {ccc, key} index declared for the key.
+	CccReadByPayload(ctx context.Context, in *CccReadByPayloadRequest, opts ...grpc.CallOption) (*CccReadByPayloadResponse, error)
+	// CccReadByPayloadHash returns events where the combination hash of
+	// data[keys[i]] == values[i] matches across all streams, ordered by
+	// position ascending. keys and values must be non-empty and equal
+	// length. Requires a {ccc_hash, keys} index declared for the key set.
+	CccReadByPayloadHash(ctx context.Context, in *CccReadByPayloadHashRequest, opts ...grpc.CallOption) (*CccReadByPayloadHashResponse, error)
 }
 
 type dcbServiceClient struct {
@@ -102,6 +114,26 @@ func (c *dcbServiceClient) ReadDcbContext(ctx context.Context, in *ReadDcbContex
 	return out, nil
 }
 
+func (c *dcbServiceClient) CccReadByPayload(ctx context.Context, in *CccReadByPayloadRequest, opts ...grpc.CallOption) (*CccReadByPayloadResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CccReadByPayloadResponse)
+	err := c.cc.Invoke(ctx, DcbService_CccReadByPayload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dcbServiceClient) CccReadByPayloadHash(ctx context.Context, in *CccReadByPayloadHashRequest, opts ...grpc.CallOption) (*CccReadByPayloadHashResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CccReadByPayloadHashResponse)
+	err := c.cc.Invoke(ctx, DcbService_CccReadByPayloadHash_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DcbServiceServer is the server API for DcbService service.
 // All implementations should embed UnimplementedDcbServiceServer
 // for forward compatibility.
@@ -122,6 +154,7 @@ func (c *dcbServiceClient) ReadDcbContext(ctx context.Context, in *ReadDcbContex
 //
 // Requires backing ReckonDB cluster on reckon-db 3.1.1+
 // (reckon_gater 2.3.1+). Older backings surface UNIMPLEMENTED.
+// TagFilter.event_type_match requires reckon-db 5.2.0+.
 type DcbServiceServer interface {
 	// Conditionally append events under the DCB pseudo-stream.
 	//
@@ -151,6 +184,15 @@ type DcbServiceServer interface {
 	// AppendIfNoTagMatches with a forward read of the matching seqs,
 	// scoped to the DCB pseudo-stream only.
 	ReadDcbContext(context.Context, *ReadDcbContextRequest) (*ReadDcbContextResponse, error)
+	// CccReadByPayload returns events where data[key] == value across
+	// all streams in the store, ordered by position ascending.
+	// Requires a {ccc, key} index declared for the key.
+	CccReadByPayload(context.Context, *CccReadByPayloadRequest) (*CccReadByPayloadResponse, error)
+	// CccReadByPayloadHash returns events where the combination hash of
+	// data[keys[i]] == values[i] matches across all streams, ordered by
+	// position ascending. keys and values must be non-empty and equal
+	// length. Requires a {ccc_hash, keys} index declared for the key set.
+	CccReadByPayloadHash(context.Context, *CccReadByPayloadHashRequest) (*CccReadByPayloadHashResponse, error)
 }
 
 // UnimplementedDcbServiceServer should be embedded to have
@@ -165,6 +207,12 @@ func (UnimplementedDcbServiceServer) AppendIfNoTagMatches(context.Context, *Appe
 }
 func (UnimplementedDcbServiceServer) ReadDcbContext(context.Context, *ReadDcbContextRequest) (*ReadDcbContextResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ReadDcbContext not implemented")
+}
+func (UnimplementedDcbServiceServer) CccReadByPayload(context.Context, *CccReadByPayloadRequest) (*CccReadByPayloadResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CccReadByPayload not implemented")
+}
+func (UnimplementedDcbServiceServer) CccReadByPayloadHash(context.Context, *CccReadByPayloadHashRequest) (*CccReadByPayloadHashResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CccReadByPayloadHash not implemented")
 }
 func (UnimplementedDcbServiceServer) testEmbeddedByValue() {}
 
@@ -222,6 +270,42 @@ func _DcbService_ReadDcbContext_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DcbService_CccReadByPayload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CccReadByPayloadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DcbServiceServer).CccReadByPayload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DcbService_CccReadByPayload_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DcbServiceServer).CccReadByPayload(ctx, req.(*CccReadByPayloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DcbService_CccReadByPayloadHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CccReadByPayloadHashRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DcbServiceServer).CccReadByPayloadHash(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DcbService_CccReadByPayloadHash_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DcbServiceServer).CccReadByPayloadHash(ctx, req.(*CccReadByPayloadHashRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DcbService_ServiceDesc is the grpc.ServiceDesc for DcbService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -236,6 +320,14 @@ var DcbService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReadDcbContext",
 			Handler:    _DcbService_ReadDcbContext_Handler,
+		},
+		{
+			MethodName: "CccReadByPayload",
+			Handler:    _DcbService_CccReadByPayload_Handler,
+		},
+		{
+			MethodName: "CccReadByPayloadHash",
+			Handler:    _DcbService_CccReadByPayloadHash_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

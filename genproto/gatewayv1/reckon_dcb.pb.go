@@ -643,6 +643,243 @@ func (x *ReadDcbContextResponse) GetMaxSeq() int64 {
 	return 0
 }
 
+type CccReadByPayloadRequest struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	StoreId string                 `protobuf:"bytes,1,opt,name=store_id,json=storeId,proto3" json:"store_id,omitempty"`
+	// JSON data field name to match against. Must be indexed via
+	// store_config.indexes [{ccc, key}].
+	Key string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	// Value the field must equal (string comparison after JSON decode).
+	Value string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	// Cap on returned events. Server may return fewer. 0 lets the
+	// server pick a sensible default.
+	BatchSize     uint64 `protobuf:"varint,4,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CccReadByPayloadRequest) Reset() {
+	*x = CccReadByPayloadRequest{}
+	mi := &file_reckon_dcb_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CccReadByPayloadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CccReadByPayloadRequest) ProtoMessage() {}
+
+func (x *CccReadByPayloadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_dcb_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CccReadByPayloadRequest.ProtoReflect.Descriptor instead.
+func (*CccReadByPayloadRequest) Descriptor() ([]byte, []int) {
+	return file_reckon_dcb_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CccReadByPayloadRequest) GetStoreId() string {
+	if x != nil {
+		return x.StoreId
+	}
+	return ""
+}
+
+func (x *CccReadByPayloadRequest) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *CccReadByPayloadRequest) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *CccReadByPayloadRequest) GetBatchSize() uint64 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type CccReadByPayloadResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Events whose data[key] == value, ordered by position ascending.
+	Events        []*RecordedEvent `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CccReadByPayloadResponse) Reset() {
+	*x = CccReadByPayloadResponse{}
+	mi := &file_reckon_dcb_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CccReadByPayloadResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CccReadByPayloadResponse) ProtoMessage() {}
+
+func (x *CccReadByPayloadResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_dcb_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CccReadByPayloadResponse.ProtoReflect.Descriptor instead.
+func (*CccReadByPayloadResponse) Descriptor() ([]byte, []int) {
+	return file_reckon_dcb_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CccReadByPayloadResponse) GetEvents() []*RecordedEvent {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
+type CccReadByPayloadHashRequest struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	StoreId string                 `protobuf:"bytes,1,opt,name=store_id,json=storeId,proto3" json:"store_id,omitempty"`
+	// Field names to include in the combo hash. Order is significant
+	// and must match the index declaration in store_config.indexes
+	// [{ccc_hash, keys}].
+	Keys []string `protobuf:"bytes,2,rep,name=keys,proto3" json:"keys,omitempty"`
+	// Values the corresponding fields must equal. Must be the same
+	// length as keys.
+	Values []string `protobuf:"bytes,3,rep,name=values,proto3" json:"values,omitempty"`
+	// Cap on returned events. 0 lets the server pick a default.
+	BatchSize     uint64 `protobuf:"varint,4,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CccReadByPayloadHashRequest) Reset() {
+	*x = CccReadByPayloadHashRequest{}
+	mi := &file_reckon_dcb_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CccReadByPayloadHashRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CccReadByPayloadHashRequest) ProtoMessage() {}
+
+func (x *CccReadByPayloadHashRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_dcb_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CccReadByPayloadHashRequest.ProtoReflect.Descriptor instead.
+func (*CccReadByPayloadHashRequest) Descriptor() ([]byte, []int) {
+	return file_reckon_dcb_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CccReadByPayloadHashRequest) GetStoreId() string {
+	if x != nil {
+		return x.StoreId
+	}
+	return ""
+}
+
+func (x *CccReadByPayloadHashRequest) GetKeys() []string {
+	if x != nil {
+		return x.Keys
+	}
+	return nil
+}
+
+func (x *CccReadByPayloadHashRequest) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+func (x *CccReadByPayloadHashRequest) GetBatchSize() uint64 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type CccReadByPayloadHashResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Events whose payload combo hash matches, ordered by position ascending.
+	Events        []*RecordedEvent `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CccReadByPayloadHashResponse) Reset() {
+	*x = CccReadByPayloadHashResponse{}
+	mi := &file_reckon_dcb_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CccReadByPayloadHashResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CccReadByPayloadHashResponse) ProtoMessage() {}
+
+func (x *CccReadByPayloadHashResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_reckon_dcb_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CccReadByPayloadHashResponse.ProtoReflect.Descriptor instead.
+func (*CccReadByPayloadHashResponse) Descriptor() ([]byte, []int) {
+	return file_reckon_dcb_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CccReadByPayloadHashResponse) GetEvents() []*RecordedEvent {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
 var File_reckon_dcb_proto protoreflect.FileDescriptor
 
 const file_reckon_dcb_proto_rawDesc = "" +
@@ -683,11 +920,29 @@ const file_reckon_dcb_proto_rawDesc = "" +
 	"batch_size\x18\x03 \x01(\x04R\tbatchSize\"k\n" +
 	"\x16ReadDcbContextResponse\x128\n" +
 	"\x06events\x18\x01 \x03(\v2 .reckon.gateway.v1.RecordedEventR\x06events\x12\x17\n" +
-	"\amax_seq\x18\x02 \x01(\x12R\x06maxSeq2\xec\x01\n" +
+	"\amax_seq\x18\x02 \x01(\x12R\x06maxSeq\"{\n" +
+	"\x17CccReadByPayloadRequest\x12\x19\n" +
+	"\bstore_id\x18\x01 \x01(\tR\astoreId\x12\x10\n" +
+	"\x03key\x18\x02 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x04 \x01(\x04R\tbatchSize\"T\n" +
+	"\x18CccReadByPayloadResponse\x128\n" +
+	"\x06events\x18\x01 \x03(\v2 .reckon.gateway.v1.RecordedEventR\x06events\"\x83\x01\n" +
+	"\x1bCccReadByPayloadHashRequest\x12\x19\n" +
+	"\bstore_id\x18\x01 \x01(\tR\astoreId\x12\x12\n" +
+	"\x04keys\x18\x02 \x03(\tR\x04keys\x12\x16\n" +
+	"\x06values\x18\x03 \x03(\tR\x06values\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x04 \x01(\x04R\tbatchSize\"X\n" +
+	"\x1cCccReadByPayloadHashResponse\x128\n" +
+	"\x06events\x18\x01 \x03(\v2 .reckon.gateway.v1.RecordedEventR\x06events2\xd2\x03\n" +
 	"\n" +
 	"DcbService\x12w\n" +
 	"\x14AppendIfNoTagMatches\x12..reckon.gateway.v1.AppendIfNoTagMatchesRequest\x1a/.reckon.gateway.v1.AppendIfNoTagMatchesResponse\x12e\n" +
-	"\x0eReadDcbContext\x12(.reckon.gateway.v1.ReadDcbContextRequest\x1a).reckon.gateway.v1.ReadDcbContextResponseBCZAcodeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1;gatewayv1b\x06proto3"
+	"\x0eReadDcbContext\x12(.reckon.gateway.v1.ReadDcbContextRequest\x1a).reckon.gateway.v1.ReadDcbContextResponse\x12k\n" +
+	"\x10CccReadByPayload\x12*.reckon.gateway.v1.CccReadByPayloadRequest\x1a+.reckon.gateway.v1.CccReadByPayloadResponse\x12w\n" +
+	"\x14CccReadByPayloadHash\x12..reckon.gateway.v1.CccReadByPayloadHashRequest\x1a/.reckon.gateway.v1.CccReadByPayloadHashResponseBCZAcodeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1;gatewayv1b\x06proto3"
 
 var (
 	file_reckon_dcb_proto_rawDescOnce sync.Once
@@ -701,7 +956,7 @@ func file_reckon_dcb_proto_rawDescGZIP() []byte {
 	return file_reckon_dcb_proto_rawDescData
 }
 
-var file_reckon_dcb_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_reckon_dcb_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_reckon_dcb_proto_goTypes = []any{
 	(*TagFilter)(nil),                    // 0: reckon.gateway.v1.TagFilter
 	(*TagList)(nil),                      // 1: reckon.gateway.v1.TagList
@@ -712,8 +967,12 @@ var file_reckon_dcb_proto_goTypes = []any{
 	(*Conflict)(nil),                     // 6: reckon.gateway.v1.Conflict
 	(*ReadDcbContextRequest)(nil),        // 7: reckon.gateway.v1.ReadDcbContextRequest
 	(*ReadDcbContextResponse)(nil),       // 8: reckon.gateway.v1.ReadDcbContextResponse
-	(*ProposedEvent)(nil),                // 9: reckon.gateway.v1.ProposedEvent
-	(*RecordedEvent)(nil),                // 10: reckon.gateway.v1.RecordedEvent
+	(*CccReadByPayloadRequest)(nil),      // 9: reckon.gateway.v1.CccReadByPayloadRequest
+	(*CccReadByPayloadResponse)(nil),     // 10: reckon.gateway.v1.CccReadByPayloadResponse
+	(*CccReadByPayloadHashRequest)(nil),  // 11: reckon.gateway.v1.CccReadByPayloadHashRequest
+	(*CccReadByPayloadHashResponse)(nil), // 12: reckon.gateway.v1.CccReadByPayloadHashResponse
+	(*ProposedEvent)(nil),                // 13: reckon.gateway.v1.ProposedEvent
+	(*RecordedEvent)(nil),                // 14: reckon.gateway.v1.RecordedEvent
 }
 var file_reckon_dcb_proto_depIdxs = []int32{
 	1,  // 0: reckon.gateway.v1.TagFilter.match_any:type_name -> reckon.gateway.v1.TagList
@@ -722,20 +981,26 @@ var file_reckon_dcb_proto_depIdxs = []int32{
 	2,  // 3: reckon.gateway.v1.TagFilter.disjunction:type_name -> reckon.gateway.v1.FilterList
 	0,  // 4: reckon.gateway.v1.FilterList.filters:type_name -> reckon.gateway.v1.TagFilter
 	0,  // 5: reckon.gateway.v1.AppendIfNoTagMatchesRequest.tag_filter:type_name -> reckon.gateway.v1.TagFilter
-	9,  // 6: reckon.gateway.v1.AppendIfNoTagMatchesRequest.events:type_name -> reckon.gateway.v1.ProposedEvent
+	13, // 6: reckon.gateway.v1.AppendIfNoTagMatchesRequest.events:type_name -> reckon.gateway.v1.ProposedEvent
 	5,  // 7: reckon.gateway.v1.AppendIfNoTagMatchesResponse.committed:type_name -> reckon.gateway.v1.Committed
 	6,  // 8: reckon.gateway.v1.AppendIfNoTagMatchesResponse.conflict:type_name -> reckon.gateway.v1.Conflict
 	0,  // 9: reckon.gateway.v1.ReadDcbContextRequest.tag_filter:type_name -> reckon.gateway.v1.TagFilter
-	10, // 10: reckon.gateway.v1.ReadDcbContextResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
-	3,  // 11: reckon.gateway.v1.DcbService.AppendIfNoTagMatches:input_type -> reckon.gateway.v1.AppendIfNoTagMatchesRequest
-	7,  // 12: reckon.gateway.v1.DcbService.ReadDcbContext:input_type -> reckon.gateway.v1.ReadDcbContextRequest
-	4,  // 13: reckon.gateway.v1.DcbService.AppendIfNoTagMatches:output_type -> reckon.gateway.v1.AppendIfNoTagMatchesResponse
-	8,  // 14: reckon.gateway.v1.DcbService.ReadDcbContext:output_type -> reckon.gateway.v1.ReadDcbContextResponse
-	13, // [13:15] is the sub-list for method output_type
-	11, // [11:13] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	14, // 10: reckon.gateway.v1.ReadDcbContextResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
+	14, // 11: reckon.gateway.v1.CccReadByPayloadResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
+	14, // 12: reckon.gateway.v1.CccReadByPayloadHashResponse.events:type_name -> reckon.gateway.v1.RecordedEvent
+	3,  // 13: reckon.gateway.v1.DcbService.AppendIfNoTagMatches:input_type -> reckon.gateway.v1.AppendIfNoTagMatchesRequest
+	7,  // 14: reckon.gateway.v1.DcbService.ReadDcbContext:input_type -> reckon.gateway.v1.ReadDcbContextRequest
+	9,  // 15: reckon.gateway.v1.DcbService.CccReadByPayload:input_type -> reckon.gateway.v1.CccReadByPayloadRequest
+	11, // 16: reckon.gateway.v1.DcbService.CccReadByPayloadHash:input_type -> reckon.gateway.v1.CccReadByPayloadHashRequest
+	4,  // 17: reckon.gateway.v1.DcbService.AppendIfNoTagMatches:output_type -> reckon.gateway.v1.AppendIfNoTagMatchesResponse
+	8,  // 18: reckon.gateway.v1.DcbService.ReadDcbContext:output_type -> reckon.gateway.v1.ReadDcbContextResponse
+	10, // 19: reckon.gateway.v1.DcbService.CccReadByPayload:output_type -> reckon.gateway.v1.CccReadByPayloadResponse
+	12, // 20: reckon.gateway.v1.DcbService.CccReadByPayloadHash:output_type -> reckon.gateway.v1.CccReadByPayloadHashResponse
+	17, // [17:21] is the sub-list for method output_type
+	13, // [13:17] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_reckon_dcb_proto_init() }
@@ -761,7 +1026,7 @@ func file_reckon_dcb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_reckon_dcb_proto_rawDesc), len(file_reckon_dcb_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
