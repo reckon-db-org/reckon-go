@@ -5,6 +5,26 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
+## [0.10.0] - 2026-09-02
+
+### Changed — module path is `github.com/reckon-db-org/reckon-go`
+
+The Go module moved off its Codeberg import path. Consumers change every
+import from `codeberg.org/reckon-db-org/reckon-go/...` to
+`github.com/reckon-db-org/reckon-go/...` and `go get
+github.com/reckon-db-org/reckon-go@v0.10.0`. The API is unchanged from
+0.9.0; `genproto/` is regenerated from reckon-proto 0.8.1, whose
+`go_package` carries the same path.
+
+### Changed — releases and the installer live on GitHub
+
+`.github/workflows/release.yml` publishes the cross-compiled `reckon`
+binaries as a GitHub Release on every `v*` tag; `scripts/install.sh`
+resolves and downloads them from the GitHub releases API
+(`RECKON_TOKEN`/`GITHUB_TOKEN` optional, `Authorization: Bearer`).
+`scripts/release-local.sh` now uses the GitHub CLI; the Codeberg upload
+helper is gone.
+
 ## [0.9.0] - 2026-06-23
 
 ### Added — `dcb.Client.CccReadByPayload` and `CccReadByPayloadHash`

@@ -10,7 +10,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 VERSION="${1:-$(git describe --tags --always --dirty 2>/dev/null || echo dev)}"
-PKG="codeberg.org/reckon-db-org/reckon-go/cmd/reckon"
+PKG="github.com/reckon-db-org/reckon-go/cmd/reckon"
 OUT="dist"
 LDFLAGS="-s -w -X main.version=${VERSION}"
 

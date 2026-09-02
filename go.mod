@@ -1,4 +1,4 @@
-module codeberg.org/reckon-db-org/reckon-go
+module github.com/reckon-db-org/reckon-go
 
 go 1.23
 

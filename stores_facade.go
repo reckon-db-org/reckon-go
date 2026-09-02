@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/stores"
+import "github.com/reckon-db-org/reckon-go/stores"
 
 // Stores returns the discovery client for cluster topology
 // (`reckon.gateway.v1.StoresService`). Stores are ephemeral — see

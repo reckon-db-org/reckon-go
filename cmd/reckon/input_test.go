@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"codeberg.org/reckon-db-org/reckon-go/streams"
-	"codeberg.org/reckon-db-org/reckon-go/subscriptions"
+	"github.com/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/subscriptions"
 )
 
 func TestParseExpected(t *testing.T) {

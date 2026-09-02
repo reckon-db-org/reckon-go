@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	pb "codeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1"
+	pb "github.com/reckon-db-org/reckon-go/genproto/gatewayv1"
 )
 
 // fakeCccServer extends fakeDcbServer with CCC payload RPC handlers.

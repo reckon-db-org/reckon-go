@@ -37,8 +37,8 @@ import (
 	"io"
 	"time"
 
-	pb "codeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1"
-	"codeberg.org/reckon-db-org/reckon-go/streams"
+	pb "github.com/reckon-db-org/reckon-go/genproto/gatewayv1"
+	"github.com/reckon-db-org/reckon-go/streams"
 	"google.golang.org/grpc"
 )
 

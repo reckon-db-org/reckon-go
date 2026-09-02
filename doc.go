@@ -2,10 +2,10 @@
 // accessed over gRPC via the reckon-gateway frontend.
 //
 // The package name is `reckon`, not `reckongo` — the module path
-// (codeberg.org/reckon-db-org/reckon-go) ends in `reckon-go` per the
+// (github.com/reckon-db-org/reckon-go) ends in `reckon-go` per the
 // org's repo-naming convention, but Go consumers import it as:
 //
-//	import "codeberg.org/reckon-db-org/reckon-go"
+//	import "github.com/reckon-db-org/reckon-go"
 //
 //	c, err := reckon.Connect(ctx, "gateway.example.org:50051")
 //

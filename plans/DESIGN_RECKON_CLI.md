@@ -391,38 +391,20 @@ Prebuilt binaries let users install without a Go toolchain. Implemented:
   (`-s -w -trimpath`), version-stamped (`-X main.version`) static
   (`CGO_ENABLED=0`) binaries named `reckon_<version>_<os>_<arch>[.exe]`, plus a
   `SHA256SUMS` manifest. ~10–11 MB each.
-- `scripts/publish-codeberg.sh <version>` — creates/reuses the Codeberg release
-  for the tag and uploads every `dist/` asset (idempotent: replaces same-named
-  assets). Forgejo/Gitea API; needs `CODEBERG_TOKEN`.
-- `.github/workflows/release.yml` — on `v*` tag (mirror picks it up from
-  Codeberg), runs both scripts on the GitHub Actions runner fleet. **Codeberg
-  releases stay canonical**; GitHub is only the runner. Requires the GitHub
-  repo/org secret `CODEBERG_TOKEN` (repo-write scope).
+- `.github/workflows/release.yml` — on a `v*` tag, runs `build-release.sh`
+  on GitHub Actions and creates the GitHub Release for the tag with every
+  `dist/` asset attached (`softprops/action-gh-release`, idempotent: replaces
+  same-named assets). Auth is the Actions-provided `GITHUB_TOKEN` with
+  `contents: write`; no extra secret.
 - `scripts/install.sh` — `curl … | sh` installer: detects OS/arch, resolves
-  `latest` (or `RECKON_VERSION`) via the Codeberg releases API, downloads the
+  `latest` (or `RECKON_VERSION`) via the GitHub releases API, downloads the
   asset + `SHA256SUMS`, verifies, installs to `RECKON_BIN_DIR`
   (default `~/.local/bin`). **Private repo ⇒ `RECKON_TOKEN` required** for both
-  the API query and the asset download (sent as `Authorization: token`).
+  the API query and the asset download (sent as `Authorization: Bearer`).
 
-**Status (2026-05-20): operational, verified end-to-end.** Pushing a `v*` tag
-to Codeberg → push-mirror syncs it to GitHub → `release.yml` builds the 5
-binaries → `publish-codeberg.sh` uploads them to the Codeberg release. Proven
-by the v0.4.0 run.
-
-Getting there required fixing three things (all now done):
-1. **Releases unit was disabled** on the repo (`has_releases=false`), so every
-   release API call 404'd. Enabled it.
-2. **Push-mirror credential** was a fine-grained GitHub PAT not authorized for
-   this repo (`403 denied to rgfaber`). Replaced with a `repo`+`workflow` token
-   authorized for `reckon-db-org`; mirror now syncs cleanly (incl. the
-   `.github/workflows` path).
-3. **`CODEBERG_TOKEN` Actions secret** was empty on the GitHub repo, so the
-   publish step failed `CODEBERG_TOKEN is required`. Set it to a Codeberg token
-   with repo-write scope.
-
-**`scripts/release-local.sh`** (`CODEBERG_TOKEN=… scripts/release-local.sh
-vX.Y.Z`) remains as a manual build+publish path (e.g. to re-publish or release
-without a tag push).
+**`scripts/release-local.sh`** (`scripts/release-local.sh vX.Y.Z`, needs an
+authenticated `gh`) remains as a manual build+publish path (e.g. to re-publish
+or release without a tag push).
 
 Not yet built (future): distro packages (AUR `reckon-bin`, `.deb`/`.rpm` via
 nfpm), Homebrew tap, mason.nvim package. Each is a thin consumer of the same
@@ -444,7 +426,7 @@ therefore unnecessary.
 
 - `go build ./cmd/reckon`.
 - CI cross-compiles `linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,
-  `windows/amd64`; published as Codeberg release assets named
+  `windows/amd64`; published as GitHub release assets named
   `reckon_<version>_<os>_<arch>(.exe)` with SHA256SUMS.
 - `reckon --version` prints `{"client":"0.3.0","api_compat":"0.3"}` for the
   plugin to verify compatibility against `health server-info`.

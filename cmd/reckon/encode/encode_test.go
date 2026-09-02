@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"codeberg.org/reckon-db-org/reckon-go/stores"
-	"codeberg.org/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/stores"
+	"github.com/reckon-db-org/reckon-go/streams"
 )
 
 func mustJSON(t *testing.T, v any) string {

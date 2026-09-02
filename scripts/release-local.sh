@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
-# One-command manual release: cross-compile + publish to Codeberg releases.
-# Use this for releases while the GitHub Actions path is unavailable (the
-# Codeberg->GitHub push-mirror / org workflow policy — see DESIGN §7a).
+# One-command manual release: cross-compile + publish to GitHub Releases.
+# The normal path is the tag-triggered .github/workflows/release.yml; use
+# this when a release must be cut from a workstation.
 #
-# Usage:  CODEBERG_TOKEN=<token> scripts/release-local.sh [version]
+# Usage:  scripts/release-local.sh [version]
 #   version defaults to the exact tag at HEAD, else `git describe`.
-#   CODEBERG_TOKEN needs repo write scope; the repo's Releases unit must be
-#   enabled (Settings -> Units, or has_releases=true via the API).
+#   Needs the GitHub CLI (`gh`) authenticated with repo write scope.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
 VERSION="${1:-$(git describe --tags --exact-match 2>/dev/null || git describe --tags)}"
-: "${CODEBERG_TOKEN:?set CODEBERG_TOKEN (Codeberg token with repo write scope)}"
+command -v gh >/dev/null || { echo "gh (GitHub CLI) is required" >&2; exit 64; }
 
 echo "==> releasing $VERSION"
 scripts/build-release.sh "$VERSION"
-scripts/publish-codeberg.sh "$VERSION"
+gh release create "$VERSION" dist/reckon_* dist/SHA256SUMS \
+    --repo reckon-db-org/reckon-go --title "$VERSION" --generate-notes
+echo "done: https://github.com/reckon-db-org/reckon-go/releases/tag/$VERSION"

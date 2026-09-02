@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	reckon "codeberg.org/reckon-db-org/reckon-go"
+	reckon "github.com/reckon-db-org/reckon-go"
 )
 
 func endpoint() string {

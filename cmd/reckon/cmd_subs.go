@@ -7,8 +7,8 @@ import (
 	"flag"
 	"io"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
-	"codeberg.org/reckon-db-org/reckon-go/subscriptions"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/subscriptions"
 )
 
 // reckon subs list -> [SubInfo]

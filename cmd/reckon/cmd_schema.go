@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
 )
 
 // reckon schema list -> [SchemaDef]

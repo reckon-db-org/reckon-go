@@ -1,16 +1,15 @@
-# Builds the `reckon` CLI for all platforms and publishes the binaries to the
-# Codeberg release when a v* tag lands. Runs on the GitHub Actions runner fleet
-# (the read-only mirror picks up the tag from Codeberg within seconds); the
-# artifacts are pushed back to Codeberg releases, which stay canonical.
-#
-# Requires repo/org secret CODEBERG_TOKEN (a Codeberg access token with repo
-# write scope) on the GitHub mirror.
+# Builds the `reckon` CLI for all platforms and publishes the binaries as a
+# GitHub Release when a v* tag lands. scripts/install.sh resolves the same
+# asset names from that release.
 name: release
 
 on:
   push:
     tags:
       - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   release:
@@ -22,12 +21,17 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version-file: go.mod
 
       - name: Cross-compile binaries
         run: scripts/build-release.sh "${GITHUB_REF_NAME}"
 
-      - name: Publish assets to Codeberg release
-        env:
-          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
-        run: scripts/publish-codeberg.sh "${GITHUB_REF_NAME}"
+      - name: Publish assets to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/reckon_*
+            dist/SHA256SUMS

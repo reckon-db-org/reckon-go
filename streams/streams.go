@@ -31,7 +31,7 @@ import (
 	"io"
 	"time"
 
-	pb "codeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1"
+	pb "github.com/reckon-db-org/reckon-go/genproto/gatewayv1"
 	"google.golang.org/grpc"
 )
 
@@ -112,7 +112,7 @@ type RecordedEvent struct {
 
 // RecordedEventFromProto converts a wire-shape *pb.RecordedEvent
 // into the idiomatic Go [RecordedEvent]. Exposed for sibling
-// packages (e.g. [codeberg.org/reckon-db-org/reckon-go/dcb]) that
+// packages (e.g. [github.com/reckon-db-org/reckon-go/dcb]) that
 // need to surface the same event type without re-deriving the
 // field-by-field mapping.
 func RecordedEventFromProto(p *pb.RecordedEvent) RecordedEvent {

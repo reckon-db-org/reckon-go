@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/health"
+import "github.com/reckon-db-org/reckon-go/health"
 
 // Health returns a health client bound to storeID
 // (`reckon.gateway.v1.HealthService`). Some health methods (notably

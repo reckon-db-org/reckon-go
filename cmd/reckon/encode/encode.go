@@ -10,8 +10,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"codeberg.org/reckon-db-org/reckon-go/stores"
-	"codeberg.org/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/stores"
+	"github.com/reckon-db-org/reckon-go/streams"
 )
 
 // Bytes selects how byte-valued fields are rendered.

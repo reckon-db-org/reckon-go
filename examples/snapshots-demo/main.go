@@ -13,8 +13,8 @@ import (
 	"log"
 	"time"
 
-	reckon "codeberg.org/reckon-db-org/reckon-go"
-	"codeberg.org/reckon-db-org/reckon-go/snapshots"
+	reckon "github.com/reckon-db-org/reckon-go"
+	"github.com/reckon-db-org/reckon-go/snapshots"
 )
 
 func main() {

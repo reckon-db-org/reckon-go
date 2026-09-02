@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	pb "codeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1"
+	pb "github.com/reckon-db-org/reckon-go/genproto/gatewayv1"
 )
 
 // The convenience readers must route to ReadByMetadata with the reserved keys.

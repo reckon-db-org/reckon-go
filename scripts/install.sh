@@ -1,22 +1,21 @@
 #!/bin/sh
-# Install the `reckon` CLI from Codeberg release assets — no Go toolchain needed.
+# Install the `reckon` CLI from GitHub release assets — no Go toolchain needed.
 #
-#   curl -fsSL https://codeberg.org/reckon-db-org/reckon-go/raw/branch/main/scripts/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/reckon-db-org/reckon-go/main/scripts/install.sh | sh
 #
 # Environment:
 #   RECKON_VERSION   release tag to install (default: latest)
 #   RECKON_BIN_DIR   install directory (default: $HOME/.local/bin)
-#   RECKON_TOKEN     Codeberg access token — OPTIONAL. The repo is public, so no
+#   RECKON_TOKEN     GitHub access token — OPTIONAL. The repo is public, so no
 #                    token is needed; set one only to raise API rate limits or if
-#                    the repo is ever made private (also read from CODEBERG_TOKEN).
-#                    Generate at Codeberg → Settings → Applications → Access Tokens (read).
+#                    the repo is ever made private (also read from GITHUB_TOKEN).
 set -eu
 
 REPO="reckon-db-org/reckon-go"
-HOST="codeberg.org"
+HOST="github.com"
 BIN_DIR="${RECKON_BIN_DIR:-$HOME/.local/bin}"
 VERSION="${RECKON_VERSION:-latest}"
-TOKEN="${RECKON_TOKEN:-${CODEBERG_TOKEN:-}}"
+TOKEN="${RECKON_TOKEN:-${GITHUB_TOKEN:-}}"
 
 say() { printf '%s\n' "$*" >&2; }
 die() { say "install: $*"; exit 1; }
@@ -27,7 +26,7 @@ need sha256sum || need shasum
 
 # curl auth header (optional — only used if a token is set).
 AUTH=""
-[ -n "$TOKEN" ] && AUTH="Authorization: token $TOKEN"
+[ -n "$TOKEN" ] && AUTH="Authorization: Bearer $TOKEN"
 fetch() { # fetch <url> <outfile|->
   if [ -n "$AUTH" ]; then curl -fsSL -H "$AUTH" -o "$2" "$1"
   else curl -fsSL -o "$2" "$1"; fi
@@ -47,13 +46,13 @@ case "$arch" in
   *) die "unsupported arch: $arch" ;;
 esac
 
-API="https://$HOST/api/v1/repos/$REPO/releases"
+API="https://api.github.com/repos/$REPO/releases"
 
 # Resolve "latest" to a concrete tag via the API.
 if [ "$VERSION" = "latest" ]; then
   tmp_rel="$(mktemp)"
   fetch "$API/latest" "$tmp_rel" || die "could not query latest release (network issue, or rate-limited — set RECKON_TOKEN to raise the limit)"
-  VERSION="$(grep -o '"tag_name":"[^"]*"' "$tmp_rel" | head -1 | cut -d'"' -f4)"
+  VERSION="$(grep -o '"tag_name": *"[^"]*"' "$tmp_rel" | head -1 | sed 's/.*"\([^"]*\)"$/\1/')"
   rm -f "$tmp_rel"
   [ -n "$VERSION" ] || die "could not determine latest version"
 fi

@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/reckon-db-org/reckon-go/streams"
-	"codeberg.org/reckon-db-org/reckon-go/subscriptions"
+	"github.com/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/subscriptions"
 )
 
 // parseExpected maps the --expect flag to an ExpectedVersion (DESIGN §3).

@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/admin"
+import "github.com/reckon-db-org/reckon-go/admin"
 
 // Admin returns an admin client bound to storeID
 // (`reckon.gateway.v1.AdminService`). Covers store stats, stream info,

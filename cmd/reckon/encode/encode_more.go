@@ -1,11 +1,11 @@
 package encode
 
 import (
-	"codeberg.org/reckon-db-org/reckon-go/admin"
-	"codeberg.org/reckon-db-org/reckon-go/health"
-	"codeberg.org/reckon-db-org/reckon-go/schema"
-	"codeberg.org/reckon-db-org/reckon-go/snapshots"
-	"codeberg.org/reckon-db-org/reckon-go/subscriptions"
+	"github.com/reckon-db-org/reckon-go/admin"
+	"github.com/reckon-db-org/reckon-go/health"
+	"github.com/reckon-db-org/reckon-go/schema"
+	"github.com/reckon-db-org/reckon-go/snapshots"
+	"github.com/reckon-db-org/reckon-go/subscriptions"
 )
 
 // --- subscriptions ---

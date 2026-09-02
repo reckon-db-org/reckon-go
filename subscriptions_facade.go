@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/subscriptions"
+import "github.com/reckon-db-org/reckon-go/subscriptions"
 
 // Subscriptions returns a persistent-subscription client bound to
 // storeID (`reckon.gateway.v1.SubscriptionService`). One Client per

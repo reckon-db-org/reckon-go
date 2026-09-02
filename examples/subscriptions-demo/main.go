@@ -19,9 +19,9 @@ import (
 	"log"
 	"time"
 
-	reckon "codeberg.org/reckon-db-org/reckon-go"
-	"codeberg.org/reckon-db-org/reckon-go/streams"
-	"codeberg.org/reckon-db-org/reckon-go/subscriptions"
+	reckon "github.com/reckon-db-org/reckon-go"
+	"github.com/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/subscriptions"
 )
 
 func main() {

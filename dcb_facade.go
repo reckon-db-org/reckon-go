@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/dcb"
+import "github.com/reckon-db-org/reckon-go/dcb"
 
 // Dcb returns a DCB client bound to storeID
 // (`reckon.gateway.v1.DcbService`). Clients sharing a Client share

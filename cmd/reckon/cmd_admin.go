@@ -5,8 +5,8 @@ import (
 	"flag"
 	"io"
 
-	"codeberg.org/reckon-db-org/reckon-go/admin"
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/admin"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
 )
 
 // reckon admin stats -> StoreStats

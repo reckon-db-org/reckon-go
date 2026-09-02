@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/temporal"
+import "github.com/reckon-db-org/reckon-go/temporal"
 
 // Temporal returns a temporal-query client bound to storeID
 // (`reckon.gateway.v1.TemporalService`). Use to read or pivot streams

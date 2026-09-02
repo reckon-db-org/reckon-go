@@ -1,10 +1,10 @@
 # reckon-go
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg)](https://buymeacoffee.com/rlefever)
 
-Idiomatic Go client for the [ReckonDB](https://codeberg.org/reckon-db-org/reckon-db) event store, accessed over gRPC via the [reckon-gateway](https://codeberg.org/reckon-db-org/reckon-gateway) frontend.
+Idiomatic Go client for the [ReckonDB](https://github.com/reckon-db-org/reckon-db) event store, accessed over gRPC via the [reckon-gateway](https://github.com/reckon-db-org/reckon-gateway) frontend.
 
 ```go
-import "codeberg.org/reckon-db-org/reckon-go"
+import "github.com/reckon-db-org/reckon-go"
 
 c, err := reckon.Connect(ctx, "gateway.example.org:50051") // TLS, system roots (the default)
 if err != nil { ... }
@@ -16,8 +16,8 @@ stores, err := c.Stores().List(ctx)
 ## What it is
 
 `reckon-go` is the Go client for the Reckon event-sourcing stack. It speaks
-gRPC to a running [reckon-gateway](https://codeberg.org/reckon-db-org/reckon-gateway),
-which fronts a [reckon-db](https://codeberg.org/reckon-db-org/reckon-db) event
+gRPC to a running [reckon-gateway](https://github.com/reckon-db-org/reckon-gateway),
+which fronts a [reckon-db](https://github.com/reckon-db-org/reckon-db) event
 store (embedded in the gateway, or federated across remote Erlang clusters).
 You get typed, idiomatic Go over the full gateway surface without speaking
 Erlang dist or hand-rolling protobuf.
@@ -48,13 +48,13 @@ store.
 As a library:
 
 ```bash
-go get codeberg.org/reckon-db-org/reckon-go
+go get github.com/reckon-db-org/reckon-go
 ```
 
 ```go
 import (
-    reckon "codeberg.org/reckon-db-org/reckon-go"
-    "codeberg.org/reckon-db-org/reckon-go/streams"
+    reckon "github.com/reckon-db-org/reckon-go"
+    "github.com/reckon-db-org/reckon-go/streams"
 )
 ```
 
@@ -75,8 +75,8 @@ import (
     "log"
     "time"
 
-    reckon "codeberg.org/reckon-db-org/reckon-go"
-    "codeberg.org/reckon-db-org/reckon-go/streams"
+    reckon "github.com/reckon-db-org/reckon-go"
+    "github.com/reckon-db-org/reckon-go/streams"
 )
 
 func main() {
@@ -173,8 +173,8 @@ by reckon-db 5.4.0+ / reckon-gateway 0.13.1+.
 
 ## Compatibility
 
-`reckon-go` is generated against [reckon-proto](https://codeberg.org/reckon-db-org/reckon-proto)
-and connects to a running [reckon-gateway](https://codeberg.org/reckon-db-org/reckon-gateway).
+`reckon-go` is generated against [reckon-proto](https://github.com/reckon-db-org/reckon-proto)
+and connects to a running [reckon-gateway](https://github.com/reckon-db-org/reckon-gateway).
 The committed gRPC stubs track reckon-proto minor versions; any gateway
 speaking the same proto minor is compatible. Some methods need a minimum
 backing store:
@@ -230,31 +230,29 @@ A single static binary exposing the whole API as JSON-emitting subcommands
 (NDJSON for streams), for shell/CI use and as the backend for editor
 integrations like reckon-nvim. See [`plans/DESIGN_RECKON_CLI.md`](plans/DESIGN_RECKON_CLI.md).
 
-**Install without a Go toolchain** (prebuilt binary from Codeberg releases):
+**Install without a Go toolchain** (prebuilt binary from GitHub releases):
 
 ```bash
-curl -fsSL https://codeberg.org/reckon-db-org/reckon-go/raw/branch/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/reckon-db-org/reckon-go/main/scripts/install.sh | sh
 ```
 
 Installs `reckon` into `~/.local/bin` (override with `RECKON_BIN_DIR`, pin a
 release with `RECKON_VERSION=vX.Y.Z`). Verifies the SHA256 before installing.
-(If the repo is ever made private, set `RECKON_TOKEN` to a Codeberg read token;
+(If the repo is ever made private, set `RECKON_TOKEN` to a GitHub read token;
 `install.sh` then sends it as an `Authorization` header for both the script
 fetch and the download.)
 
 **With Go** (the repo is public, so this is all you need):
 
 ```bash
-go install codeberg.org/reckon-db-org/reckon-go/cmd/reckon@latest
+go install github.com/reckon-db-org/reckon-go/cmd/reckon@latest
 ```
 
 <details>
 <summary>If the repo is ever made private</summary>
 
 ```bash
-go env -w GOPRIVATE=codeberg.org/reckon-db-org
-git config --global url."git@codeberg.org:".insteadOf "https://codeberg.org/"
-go install codeberg.org/reckon-db-org/reckon-go/cmd/reckon@latest
+go install github.com/reckon-db-org/reckon-go/cmd/reckon@latest
 ```
 </details>
 
@@ -265,12 +263,12 @@ reckon -e beam01.lab:50051 -s default_store streams watch user-123   # NDJSON
 ```
 
 Release binaries (`linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,
-`windows/amd64`) are built and published to Codeberg releases by
+`windows/amd64`) are built and published to GitHub releases by
 `.github/workflows/release.yml` on every `v*` tag.
 
 ## Codegen
 
-Generated gRPC stubs live in `genproto/gatewayv1/`, written by [buf](https://buf.build) from the canonical proto bundle in [reckon-proto](https://codeberg.org/reckon-db-org/reckon-proto):
+Generated gRPC stubs live in `genproto/gatewayv1/`, written by [buf](https://buf.build) from the canonical proto bundle in [reckon-proto](https://github.com/reckon-db-org/reckon-proto):
 
 ```bash
 cd ../reckon-proto && buf generate --template buf.gen.yaml --output ../reckon-go
@@ -292,12 +290,12 @@ The generated code is committed (not regenerated on `go build`) so consumers don
 
 reckon-go is the Go client for the Reckon event-sourcing ecosystem:
 
-- **[reckon-proto](https://codeberg.org/reckon-db-org/reckon-proto)**: the wire-contract protobufs this client is generated against.
-- **[reckon-gateway](https://codeberg.org/reckon-db-org/reckon-gateway)**: the gRPC + HTTP/JSON ingress this client connects to. It serves a reckon-db store (embedded or federated).
-- **[reckon-gater](https://codeberg.org/reckon-db-org/reckon-gater)**: shared types and the store-worker API behind the gateway.
-- **[reckon-db](https://codeberg.org/reckon-db-org/reckon-db)**: the BEAM-native event store the gateway fronts.
-- **[evoq](https://codeberg.org/reckon-db-org/evoq)** + **[reckon-evoq](https://codeberg.org/reckon-db-org/reckon-evoq)**: the CQRS framework and its Reckon-store adapter (server side).
-- **reckon-portal**: docs and landing site ([reckon-internal/reckon-portal](https://codeberg.org/reckon-internal/reckon-portal)).
+- **[reckon-proto](https://github.com/reckon-db-org/reckon-proto)**: the wire-contract protobufs this client is generated against.
+- **[reckon-gateway](https://github.com/reckon-db-org/reckon-gateway)**: the gRPC + HTTP/JSON ingress this client connects to. It serves a reckon-db store (embedded or federated).
+- **[reckon-gater](https://github.com/reckon-db-org/reckon-gater)**: shared types and the store-worker API behind the gateway.
+- **[reckon-db](https://github.com/reckon-db-org/reckon-db)**: the BEAM-native event store the gateway fronts.
+- **[evoq](https://github.com/reckon-db-org/evoq)** + **[reckon-evoq](https://github.com/reckon-db-org/reckon-evoq)**: the CQRS framework and its Reckon-store adapter (server side).
+- **reckon-portal**: docs and landing site ([reckon-internal/reckon-portal](https://github.com/reckon-db-org/reckon-portal)).
 
 ## License
 

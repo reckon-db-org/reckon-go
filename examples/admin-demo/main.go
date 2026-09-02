@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	reckon "codeberg.org/reckon-db-org/reckon-go"
+	reckon "github.com/reckon-db-org/reckon-go"
 )
 
 func main() {

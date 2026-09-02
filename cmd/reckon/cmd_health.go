@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
-	"codeberg.org/reckon-db-org/reckon-go/health"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/health"
 )
 
 // reckon health check (store-bound) -> CheckResult

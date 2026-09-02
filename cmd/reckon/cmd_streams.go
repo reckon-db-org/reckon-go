@@ -6,8 +6,8 @@ import (
 	"io"
 	"strings"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
-	"codeberg.org/reckon-db-org/reckon-go/streams"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/streams"
 )
 
 // eventsResult encodes a slice of recorded events as a JSON array.

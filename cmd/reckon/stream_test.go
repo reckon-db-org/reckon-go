@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

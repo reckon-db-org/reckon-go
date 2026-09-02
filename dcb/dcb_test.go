@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	pb "codeberg.org/reckon-db-org/reckon-go/genproto/gatewayv1"
+	pb "github.com/reckon-db-org/reckon-go/genproto/gatewayv1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"

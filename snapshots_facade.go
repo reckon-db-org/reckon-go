@@ -1,6 +1,6 @@
 package reckon
 
-import "codeberg.org/reckon-db-org/reckon-go/snapshots"
+import "github.com/reckon-db-org/reckon-go/snapshots"
 
 // Snapshots returns a snapshot client bound to storeID
 // (`reckon.gateway.v1.SnapshotService`). Snapshots are aggregate-state

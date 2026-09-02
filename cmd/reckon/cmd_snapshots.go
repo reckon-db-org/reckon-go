@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"codeberg.org/reckon-db-org/reckon-go/cmd/reckon/encode"
-	"codeberg.org/reckon-db-org/reckon-go/snapshots"
+	"github.com/reckon-db-org/reckon-go/cmd/reckon/encode"
+	"github.com/reckon-db-org/reckon-go/snapshots"
 )
 
 func snapshotsResult(out io.Writer, recs []snapshots.Record, mode encode.Bytes, pretty bool) error {
