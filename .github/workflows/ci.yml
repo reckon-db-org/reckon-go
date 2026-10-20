@@ -6,13 +6,6 @@
 #
 # Modeled on macula-io/macula-fovea's ci.yml, this org's standard for Go.
 #
-# ⚠ gofmt is NOT a step yet. Ten files in the tree are not gofmt-clean
-# (measured 2026-10-20: cmd/filter-probe/main.go, cmd/probe/main.go, and eight
-# under dcb/, health/, snapshots/, stores/ and streams/), so adding the check
-# now would make this workflow red on its first run and every run after it.
-# That is a source fix, not a CI fix. Add the step in the change that
-# reformats them.
-#
 # The reference reads the Go version out of .tool-versions with an awk step.
 # This repository has no .tool-versions, so the version comes from go.mod,
 # which is where it is already written.
@@ -45,6 +38,14 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+
+      - name: gofmt
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "::error title=gofmt::not gofmt-clean: $unformatted"
+            exit 1
+          fi
 
       - name: Vet
         run: go vet ./...
