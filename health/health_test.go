@@ -251,12 +251,12 @@ func TestServerInfo(t *testing.T) {
 
 func TestAllRPCErrors(t *testing.T) {
 	srv := &fakeHealthServer{
-		checkErr:       status.Error(codes.Internal, "x"),
-		healthErr:      status.Error(codes.Internal, "x"),
-		clusterErr:     status.Error(codes.Internal, "x"),
-		memLevelErr:    status.Error(codes.Internal, "x"),
-		memStatsErr:    status.Error(codes.Internal, "x"),
-		serverInfoErr:  status.Error(codes.Internal, "x"),
+		checkErr:      status.Error(codes.Internal, "x"),
+		healthErr:     status.Error(codes.Internal, "x"),
+		clusterErr:    status.Error(codes.Internal, "x"),
+		memLevelErr:   status.Error(codes.Internal, "x"),
+		memStatsErr:   status.Error(codes.Internal, "x"),
+		serverInfoErr: status.Error(codes.Internal, "x"),
 	}
 	c, cleanup := newTestClient(t, srv)
 	defer cleanup()

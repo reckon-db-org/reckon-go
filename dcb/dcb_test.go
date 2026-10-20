@@ -108,13 +108,13 @@ func TestAndOrNestingToProto(t *testing.T) {
 type fakeDcbServer struct {
 	pb.UnimplementedDcbServiceServer
 
-	gotAppend   *pb.AppendIfNoTagMatchesRequest
-	appendResp  *pb.AppendIfNoTagMatchesResponse
-	appendErr   error
+	gotAppend  *pb.AppendIfNoTagMatchesRequest
+	appendResp *pb.AppendIfNoTagMatchesResponse
+	appendErr  error
 
-	gotRead    *pb.ReadDcbContextRequest
-	readResp   *pb.ReadDcbContextResponse
-	readErr    error
+	gotRead  *pb.ReadDcbContextRequest
+	readResp *pb.ReadDcbContextResponse
+	readErr  error
 }
 
 func (s *fakeDcbServer) AppendIfNoTagMatches(_ context.Context, req *pb.AppendIfNoTagMatchesRequest) (*pb.AppendIfNoTagMatchesResponse, error) {

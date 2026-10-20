@@ -399,31 +399,31 @@ func TestEventTimestampMapping(t *testing.T) {
 
 func TestAllRPCErrors(t *testing.T) {
 	srv := &fakeStreamServer{
-		appendErr:   status.Error(codes.Internal, "x"),
-		readFwdErr:  status.Error(codes.Internal, "x"),
-		readBwdErr:  status.Error(codes.Internal, "x"),
-		versionErr:  status.Error(codes.Internal, "x"),
-		listErr:     status.Error(codes.Internal, "x"),
-		deleteErr:   status.Error(codes.Internal, "x"),
-		byTypesErr:  status.Error(codes.Internal, "x"),
-		byTagsErr:   status.Error(codes.Internal, "x"),
-		byMetaErr:   status.Error(codes.Internal, "x"),
-		globalErr:   status.Error(codes.Internal, "x"),
+		appendErr:  status.Error(codes.Internal, "x"),
+		readFwdErr: status.Error(codes.Internal, "x"),
+		readBwdErr: status.Error(codes.Internal, "x"),
+		versionErr: status.Error(codes.Internal, "x"),
+		listErr:    status.Error(codes.Internal, "x"),
+		deleteErr:  status.Error(codes.Internal, "x"),
+		byTypesErr: status.Error(codes.Internal, "x"),
+		byTagsErr:  status.Error(codes.Internal, "x"),
+		byMetaErr:  status.Error(codes.Internal, "x"),
+		globalErr:  status.Error(codes.Internal, "x"),
 	}
 	c, cleanup := newTestClient(t, srv)
 	defer cleanup()
 	ctx := context.Background()
 	for name, fn := range map[string]func() error{
-		"Append":   func() error { _, e := c.Append(ctx, "s", AnyVersion, nil); return e },
-		"Read":     func() error { _, e := c.Read(ctx, "s", 0, 0); return e },
-		"ReadBwd":  func() error { _, e := c.ReadBackward(ctx, "s", 0, 0); return e },
-		"Version":  func() error { _, e := c.Version(ctx, "s"); return e },
-		"List":     func() error { _, e := c.List(ctx); return e },
-		"Delete":   func() error { return c.Delete(ctx, "s") },
-		"ByTypes":  func() error { _, e := c.ReadByEventTypes(ctx, []string{"t"}, 0); return e },
-		"ByTags":   func() error { _, e := c.ReadByTags(ctx, []string{"t"}, TagMatchAny, 0); return e },
-		"ByMeta":   func() error { _, e := c.ReadByMetadata(ctx, "k", "v", 0); return e },
-		"Global":   func() error { _, e := c.ReadAllGlobal(ctx, 0, 0); return e },
+		"Append":  func() error { _, e := c.Append(ctx, "s", AnyVersion, nil); return e },
+		"Read":    func() error { _, e := c.Read(ctx, "s", 0, 0); return e },
+		"ReadBwd": func() error { _, e := c.ReadBackward(ctx, "s", 0, 0); return e },
+		"Version": func() error { _, e := c.Version(ctx, "s"); return e },
+		"List":    func() error { _, e := c.List(ctx); return e },
+		"Delete":  func() error { return c.Delete(ctx, "s") },
+		"ByTypes": func() error { _, e := c.ReadByEventTypes(ctx, []string{"t"}, 0); return e },
+		"ByTags":  func() error { _, e := c.ReadByTags(ctx, []string{"t"}, TagMatchAny, 0); return e },
+		"ByMeta":  func() error { _, e := c.ReadByMetadata(ctx, "k", "v", 0); return e },
+		"Global":  func() error { _, e := c.ReadAllGlobal(ctx, 0, 0); return e },
 	} {
 		if err := fn(); err == nil {
 			t.Errorf("%s: want error", name)

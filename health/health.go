@@ -123,12 +123,12 @@ type MemoryStats struct {
 
 // ServerInfo is the result of [Client.ServerInfo].
 type ServerInfo struct {
-	ReckonDbVersion        string
-	ReckonGatewayVersion   string
+	ReckonDbVersion         string
+	ReckonGatewayVersion    string
 	APICompatibilityVersion string
-	IntegrityEnabled       bool
-	IntegrityAlgo          string
-	HmacKeyId              uint32
+	IntegrityEnabled        bool
+	IntegrityAlgo           string
+	HmacKeyId               uint32
 }
 
 // Client is the typed wrapper for one store. Construct via [New].

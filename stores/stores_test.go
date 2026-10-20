@@ -28,7 +28,7 @@ type fakeStoresServer struct {
 	getErr  error
 
 	watchEvents []*pb.StoreEvent // sequence to send, then EOF
-	watchErr    error                  // returned mid-stream if non-nil
+	watchErr    error            // returned mid-stream if non-nil
 }
 
 func (s *fakeStoresServer) ListStores(_ context.Context, _ *pb.ListStoresRequest) (*pb.ListStoresResponse, error) {

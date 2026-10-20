@@ -30,9 +30,9 @@ func main() {
 	subs := c.Subscriptions("default_store")
 
 	cases := []struct {
-		label  string
-		spec   subscriptions.Spec
-		want   string
+		label string
+		spec  subscriptions.Spec
+		want  string
 	}{
 		{
 			label: "valid stream selector",

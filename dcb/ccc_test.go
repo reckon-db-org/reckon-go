@@ -11,9 +11,9 @@ import (
 type fakeCccServer struct {
 	pb.UnimplementedDcbServiceServer
 
-	gotByPayload     *pb.CccReadByPayloadRequest
-	byPayloadResp    *pb.CccReadByPayloadResponse
-	byPayloadErr     error
+	gotByPayload  *pb.CccReadByPayloadRequest
+	byPayloadResp *pb.CccReadByPayloadResponse
+	byPayloadErr  error
 
 	gotByPayloadHash *pb.CccReadByPayloadHashRequest
 	byHashResp       *pb.CccReadByPayloadHashResponse

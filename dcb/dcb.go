@@ -219,10 +219,10 @@ func (c *Client) Append(
 		pe = append(pe, e.toProto())
 	}
 	resp, err := c.raw.AppendIfNoTagMatches(ctx, &pb.AppendIfNoTagMatchesRequest{
-		StoreId:    c.store,
-		TagFilter:  filter.toProto(),
-		SeqCutoff:  cutoff,
-		Events:     pe,
+		StoreId:   c.store,
+		TagFilter: filter.toProto(),
+		SeqCutoff: cutoff,
+		Events:    pe,
 	}, opts...)
 	if err != nil {
 		return nil, nil, err
@@ -254,9 +254,9 @@ func (c *Client) Read(
 		return ReadResult{}, errors.New("dcb: nil filter")
 	}
 	resp, err := c.raw.ReadDcbContext(ctx, &pb.ReadDcbContextRequest{
-		StoreId:    c.store,
-		TagFilter:  filter.toProto(),
-		BatchSize:  batchSize,
+		StoreId:   c.store,
+		TagFilter: filter.toProto(),
+		BatchSize: batchSize,
 	}, opts...)
 	if err != nil {
 		return ReadResult{}, err

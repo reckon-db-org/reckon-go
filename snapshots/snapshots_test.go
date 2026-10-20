@@ -116,11 +116,11 @@ func TestSave_Error(t *testing.T) {
 
 func TestAt(t *testing.T) {
 	srv := &fakeSnapshotServer{readResp: &pb.SnapshotRecord{
-		StreamId: "users-42",
-		Version:  100,
-		Data:     []byte("payload"),
-		Metadata: []byte("meta"),
-		Timestamp: 1716200000000,
+		StreamId:   "users-42",
+		Version:    100,
+		Data:       []byte("payload"),
+		Metadata:   []byte("meta"),
+		Timestamp:  1716200000000,
 		AnchorHash: []byte{0xde, 0xad},
 	}}
 	c, cleanup := newTestClient(t, srv)
