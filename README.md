@@ -83,9 +83,9 @@ func main() {
     ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
     defer cancel()
 
-    // Lab gateway over plaintext gRPC. Drop reckon.Insecure() for a
+    // A gateway over plaintext gRPC (a local one, say). Drop reckon.Insecure() for a
     // TLS gateway (the default), or use reckon.TLSWithCA for a private CA.
-    c, err := reckon.Connect(ctx, "beam01.lab:50051", reckon.Insecure())
+    c, err := reckon.Connect(ctx, "localhost:50051", reckon.Insecure())
     if err != nil {
         log.Fatalf("connect: %v", err)
     }
@@ -195,8 +195,8 @@ Since 0.7.0 `Connect` defaults to TLS verified against the system root
 pool. Plaintext is an explicit opt-in, never a silent default:
 
 ```go
-// Lab gateway without TLS (e.g. beam01.lab:50051):
-c, err := reckon.Connect(ctx, "beam01.lab:50051", reckon.Insecure())
+// A gateway without TLS (a local one, say):
+c, err := reckon.Connect(ctx, "localhost:50051", reckon.Insecure())
 
 // Self-signed / private-CA gateway:
 opt, err := reckon.TLSWithCA("/etc/reckon/ca.pem", "")
@@ -258,8 +258,8 @@ go install github.com/reckon-db-org/reckon-go/cmd/reckon@latest
 
 ```bash
 reckon --version
-reckon -e beam01.lab:50051 -s default_store streams read user-123 --count 10
-reckon -e beam01.lab:50051 -s default_store streams watch user-123   # NDJSON
+reckon -e localhost:50051 -s default_store streams read user-123 --count 10
+reckon -e localhost:50051 -s default_store streams watch user-123   # NDJSON
 ```
 
 Release binaries (`linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,

@@ -1,0 +1,22 @@
+# Every Go block in the README and guides builds against this module
+# (macula-codebase-checks#8), so a reader who copies an example gets code that
+# builds.
+#
+# ⚠ NO paths-ignore HERE, on purpose: ci.yml ignores **.md, which is right for the
+# suite and wrong for this check, since a doc change is what it has to see.
+name: docs
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go-blocks:
+    name: Go blocks in the docs
+    permissions:
+      contents: read
+    uses: macula-io/macula-ci-images/.github/workflows/doc-snippets-go.yml@9ee9724a6a5124602a37ae7378dd9b3b85447879

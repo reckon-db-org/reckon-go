@@ -5,6 +5,18 @@ All notable changes to `reckon-go` will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
+## [Unreleased]
+
+### Added
+
+- `docs.yml` builds every Go block in the README and guides against the module
+  (macula-codebase-checks#8), on every change including doc-only ones.
+
+### Changed
+
+- The README's examples dial `localhost:50051` instead of a lab gateway's host
+  name.
+
 ## [0.10.0] - 2026-09-02
 
 ### Changed — module path is `github.com/reckon-db-org/reckon-go`
