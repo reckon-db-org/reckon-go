@@ -86,7 +86,7 @@ func TestEventZeroTimeIsNullAndHashOmitted(t *testing.T) {
 
 func TestInstance(t *testing.T) {
 	i := stores.Instance{
-		StoreID: "default_store", Node: "reckon@beam01", Mode: stores.ModeCluster,
+		StoreID: "default_store", Node: "reckon@node-1", Mode: stores.ModeCluster,
 		DataDir: "/bulk0/reckon", Timeout: 5 * time.Second, RegisteredAt: ts,
 	}
 	got := mustJSON(t, Instance(i))

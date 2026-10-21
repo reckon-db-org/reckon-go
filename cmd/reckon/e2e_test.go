@@ -3,7 +3,7 @@
 // End-to-end tests against a live gateway (the running fleet). Gated behind
 // the `e2e` build tag so default `go test` stays hermetic.
 //
-//	RECKON_ENDPOINT=beam01.lab:50051 RECKON_STORE=default_store \
+//	RECKON_ENDPOINT=localhost:50051 RECKON_STORE=default_store \
 //	  go test -tags e2e ./cmd/reckon/...
 //
 // They exercise the real binary path via run() — full routing + encode +
@@ -26,7 +26,7 @@ func env(k, def string) string {
 	return def
 }
 
-func endpoint() string { return env("RECKON_ENDPOINT", "beam01.lab:50051") }
+func endpoint() string { return env("RECKON_ENDPOINT", "localhost:50051") }
 func store() string    { return env("RECKON_STORE", "default_store") }
 
 // invoke runs the CLI in-process with the fleet endpoint/store injected as

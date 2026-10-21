@@ -237,7 +237,7 @@ scripts that round-trip use `base64`.
 ### 4.4 `Instance` (stores)
 
 ```json
-{ "store_id": "default_store", "node": "reckon@beam01", "mode": "cluster",
+{ "store_id": "default_store", "node": "reckon@node-1", "mode": "cluster",
   "data_dir": "/bulk0/reckon/default_store", "timeout_ms": 5000,
   "registered_at": "2026-05-20T13:00:00Z" }
 ```
@@ -274,7 +274,7 @@ scripts that round-trip use `base64`.
 { "status": "healthy", "details": {} }   // status ∈ healthy|degraded|unhealthy
 // HealthResult
 { "status": "healthy", "stores": {"default_store": 4}, "total_workers": 4,
-  "node": "reckon@beam01", "timestamp": "…" }
+  "node": "reckon@node-1", "timestamp": "…" }
 // MemoryStats
 { "used_bytes": 123, "total_bytes": 456, "usage_percent": 27.0, "breakdown": {"ets": 100} }
 // ServerInfo

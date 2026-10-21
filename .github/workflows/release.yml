@@ -12,7 +12,15 @@ permissions:
   contents: write
 
 jobs:
+  # The docs check on the tagged commit: a tag whose README or guides carry a Go
+  # block that no longer builds does not release (macula-codebase-checks#8).
+  docs:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/docs.yml
+
   release:
+    needs: [docs]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

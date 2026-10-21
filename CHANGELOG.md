@@ -14,8 +14,9 @@ Versioning: [SemVer](https://semver.org/) at the Go-API level.
 
 ### Changed
 
-- The README's examples dial `localhost:50051` instead of a lab gateway's host
-  name.
+- No lab host is named any more: the README, the godoc examples, the probe's
+  `-endpoint` default and the e2e defaults dial `localhost:50051`, and a test
+  fixture's node is `reckon@node-1`. A release now waits on the docs check.
 
 ## [0.10.0] - 2026-09-02
 

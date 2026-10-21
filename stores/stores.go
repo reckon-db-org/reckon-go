@@ -9,7 +9,7 @@
 //
 // Usage:
 //
-//	c, _ := reckon.Connect(ctx, "beam01.lab:50051")
+//	c, _ := reckon.Connect(ctx, "localhost:50051")
 //	defer c.Close()
 //	sc := stores.New(c.Conn())
 //

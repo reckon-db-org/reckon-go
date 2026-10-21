@@ -7,6 +7,8 @@
 name: docs
 
 on:
+  # release.yml calls this on the tag and builds the release only when it is green.
+  workflow_call:
   push:
     branches: ['**']
   pull_request:

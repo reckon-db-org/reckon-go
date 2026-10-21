@@ -9,7 +9,7 @@
 //
 //	go test -tags e2e ./e2e/...
 //
-// Endpoint defaults to the lab gateway on beam01; override with
+// Endpoint defaults to a local gateway (localhost:50051); override with
 //
 //	RECKON_E2E_ENDPOINT=host:port go test -tags e2e ./e2e/...
 //
@@ -35,12 +35,12 @@ func endpoint() string {
 	if e := os.Getenv("RECKON_E2E_ENDPOINT"); e != "" {
 		return e
 	}
-	return "beam01.lab:50051"
+	return "localhost:50051"
 }
 
 // resolve turns "host:port" into "ip:port" using Go's net resolver,
 // which consults /etc/hosts. grpc-go's built-in dns resolver does
-// NOT reliably read /etc/hosts, so lab hostnames (beam01.lab) time
+// NOT reliably read /etc/hosts, so names only it knows (gateway.lan) time
 // out unless we pre-resolve here. Pass-through on failure (already an
 // IP, or genuinely unresolvable — let the dial surface the error).
 func resolve(ep string) string {

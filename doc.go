@@ -12,7 +12,7 @@
 // Connect defaults to TLS against the system root pool. Plaintext lab
 // gateways need the explicit opt-in:
 //
-//	c, err := reckon.Connect(ctx, "beam01.lab:50051", reckon.Insecure())
+//	c, err := reckon.Connect(ctx, "localhost:50051", reckon.Insecure())
 //
 // # Top-level facade
 //

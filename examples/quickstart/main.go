@@ -2,7 +2,7 @@
 //
 // Run against the live 4-node beam cluster:
 //
-//	go run ./examples/quickstart -endpoint beam01.lab:50051
+//	go run ./examples/quickstart -endpoint localhost:50051
 package main
 
 import (

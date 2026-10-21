@@ -20,7 +20,7 @@ type Client struct {
 }
 
 // Connect dials the given gateway endpoint and returns a ready Client.
-// The endpoint is in `host:port` form (e.g. "beam01.lab:50051").
+// The endpoint is in `host:port` form (e.g. "localhost:50051").
 //
 // A bare host:port target is dialed through the passthrough resolver, which
 // delegates name resolution to the dialer (honouring /etc/hosts and nsswitch)

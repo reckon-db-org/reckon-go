@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	ep := flag.String("endpoint", "beam01.lab:50051", "gateway endpoint")
+	ep := flag.String("endpoint", "localhost:50051", "gateway endpoint")
 	flag.Parse()
 
 	conn, err := grpc.NewClient(*ep,

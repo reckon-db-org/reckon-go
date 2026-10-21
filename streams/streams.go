@@ -7,7 +7,7 @@
 //
 // Usage:
 //
-//	c, _ := reckon.Connect(ctx, "beam01.lab:50051")
+//	c, _ := reckon.Connect(ctx, "localhost:50051")
 //	defer c.Close()
 //	s := c.Streams("default_store")
 //
