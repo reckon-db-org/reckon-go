@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	endpoint := flag.String("endpoint", "192.168.1.11:50051",
+	endpoint := flag.String("endpoint", "localhost:50051",
 		"reckon-gateway gRPC endpoint")
 	flag.Parse()
 

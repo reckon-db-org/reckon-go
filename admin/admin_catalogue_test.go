@@ -170,7 +170,7 @@ func TestGetCatalogueStatus(t *testing.T) {
 				Clusters: []*pb.CatalogueClusterStatus{
 					{
 						ClusterId:   "parksim",
-						Members:     []string{"parksim_entry2exit@192.168.1.10", "parksim_lot@192.168.1.11"},
+						Members:     []string{"parksim_entry2exit@node-1", "parksim_lot@node-2"},
 						StoreCount:  3,
 						Status:      "up",
 						LastRefresh: refresh1,
@@ -183,7 +183,7 @@ func TestGetCatalogueStatus(t *testing.T) {
 				Clusters: []CatalogueClusterInfo{
 					{
 						ClusterID:   "parksim",
-						Members:     []string{"parksim_entry2exit@192.168.1.10", "parksim_lot@192.168.1.11"},
+						Members:     []string{"parksim_entry2exit@node-1", "parksim_lot@node-2"},
 						StoreCount:  3,
 						Status:      "up",
 						LastRefresh: time.Date(2026, 5, 20, 1, 23, 45, 0, time.UTC),

@@ -143,7 +143,7 @@ func TestHealth_GatewayWide(t *testing.T) {
 		Status:       pb.HealthStatus_HEALTH_STATUS_HEALTHY,
 		Stores:       map[string]uint32{"a": 3, "b": 5},
 		TotalWorkers: 8,
-		Node:         "reckon_gateway@192.168.1.11",
+		Node:         "reckon_gateway@node-2",
 		Timestamp:    1716200000000,
 	}}
 	c, cleanup := newTestClient(t, srv)
@@ -156,7 +156,7 @@ func TestHealth_GatewayWide(t *testing.T) {
 		Status:       StatusHealthy,
 		Stores:       map[string]uint32{"a": 3, "b": 5},
 		TotalWorkers: 8,
-		Node:         "reckon_gateway@192.168.1.11",
+		Node:         "reckon_gateway@node-2",
 		Timestamp:    time.UnixMilli(1716200000000),
 	}
 	if !reflect.DeepEqual(got, want) {

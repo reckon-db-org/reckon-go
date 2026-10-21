@@ -3,7 +3,7 @@
 //
 // Run against the live 4-node beam cluster:
 //
-//	go run ./examples/subscriptions-demo -endpoint 192.168.1.11:50051
+//	go run ./examples/subscriptions-demo -endpoint localhost:50051
 //
 // Note: this demo deliberately does NOT call Create() before Subscribe().
 // The gateway treats a second save with the same (type,name) as

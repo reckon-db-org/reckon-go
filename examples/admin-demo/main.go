@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	endpoint := flag.String("endpoint", "192.168.1.11:50051", "gateway address")
+	endpoint := flag.String("endpoint", "localhost:50051", "gateway address")
 	store := flag.String("store", "default_store", "store id")
 	flag.Parse()
 

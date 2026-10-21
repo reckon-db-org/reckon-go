@@ -125,7 +125,7 @@ func TestList_RPCError(t *testing.T) {
 func TestGet(t *testing.T) {
 	srv := &fakeStoresServer{getResp: &pb.GetStoreResponse{
 		Instances: []*pb.StoreInstance{
-			{StoreId: "parksim_lot_store", Node: "parksim_lot@192.168.1.11", Mode: pb.StoreMode_STORE_MODE_SINGLE},
+			{StoreId: "parksim_lot_store", Node: "parksim_lot@node-2", Mode: pb.StoreMode_STORE_MODE_SINGLE},
 		},
 	}}
 	c, cleanup := newTestClient(t, srv)

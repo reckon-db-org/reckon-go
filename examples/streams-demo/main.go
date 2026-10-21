@@ -3,7 +3,7 @@
 //
 // Run against the live 4-node beam cluster:
 //
-//	go run ./examples/streams-demo -endpoint 192.168.1.11:50051
+//	go run ./examples/streams-demo -endpoint localhost:50051
 package main
 
 import (
