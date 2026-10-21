@@ -156,70 +156,84 @@ func adminLinks(ctx context.Context, o *opts, args []string, _ io.Reader, out io
 		return err
 	}
 	defer c.Close()
-	ac := c.Admin(o.store)
-	sub, rest := args[0], args[1:]
 
 	rctx, cancel := o.rpcCtx(ctx)
 	defer cancel()
+	return adminLinksSub(rctx, c.Admin(o.store), out, o, args[0], args[1:])
+}
 
+// adminLinksSub runs one links subcommand. The reads name their own usage line,
+// and delete, start and stop differ only in the call they make and the word
+// they report.
+func adminLinksSub(rctx context.Context, ac *admin.Client, out io.Writer, o *opts, sub string, rest []string) error {
 	switch sub {
 	case "list":
-		links, err := ac.ListLinks(rctx)
-		if err != nil {
-			return fromGRPC(err)
-		}
-		arr := make([]map[string]any, len(links))
-		for i, l := range links {
-			arr[i] = encode.LinkSpec(l)
-		}
-		return writeJSON(out, arr, o.pretty)
+		return adminLinksList(rctx, ac, out, o)
 	case "get":
-		if len(rest) != 1 {
-			return usageErr("admin links get: expected <name>")
-		}
-		l, err := ac.GetLink(rctx, rest[0])
-		if err != nil {
-			return fromGRPC(err)
-		}
-		return writeJSON(out, encode.LinkSpec(l), o.pretty)
+		return adminLinksGet(rctx, ac, out, o, rest)
 	case "info":
-		if len(rest) != 1 {
-			return usageErr("admin links info: expected <name>")
-		}
-		l, err := ac.LinkInfo(rctx, rest[0])
-		if err != nil {
-			return fromGRPC(err)
-		}
-		return writeJSON(out, encode.LinkRuntime(l), o.pretty)
+		return adminLinksInfo(rctx, ac, out, o, rest)
 	case "create":
 		return adminLinkCreate(rctx, ac, o, rest, out)
 	case "delete":
-		if len(rest) != 1 {
-			return usageErr("admin links delete: expected <name>")
-		}
-		if err := ac.DeleteLink(rctx, rest[0]); err != nil {
-			return fromGRPC(err)
-		}
-		return writeJSON(out, map[string]any{"deleted": true}, o.pretty)
+		return adminLinksAct(rctx, ac, out, o, sub, rest,
+			func(c context.Context, name string) error { return ac.DeleteLink(c, name) }, "deleted")
 	case "start":
-		if len(rest) != 1 {
-			return usageErr("admin links start: expected <name>")
-		}
-		if err := ac.StartLink(rctx, rest[0]); err != nil {
-			return fromGRPC(err)
-		}
-		return writeJSON(out, map[string]any{"started": true}, o.pretty)
+		return adminLinksAct(rctx, ac, out, o, sub, rest,
+			func(c context.Context, name string) error { return ac.StartLink(c, name) }, "started")
 	case "stop":
-		if len(rest) != 1 {
-			return usageErr("admin links stop: expected <name>")
-		}
-		if err := ac.StopLink(rctx, rest[0]); err != nil {
-			return fromGRPC(err)
-		}
-		return writeJSON(out, map[string]any{"stopped": true}, o.pretty)
+		return adminLinksAct(rctx, ac, out, o, sub, rest,
+			func(c context.Context, name string) error { return ac.StopLink(c, name) }, "stopped")
 	default:
 		return usageErr("admin links: unknown subcommand %q", sub)
 	}
+}
+
+func adminLinksList(rctx context.Context, ac *admin.Client, out io.Writer, o *opts) error {
+	links, err := ac.ListLinks(rctx)
+	if err != nil {
+		return fromGRPC(err)
+	}
+	arr := make([]map[string]any, len(links))
+	for i, l := range links {
+		arr[i] = encode.LinkSpec(l)
+	}
+	return writeJSON(out, arr, o.pretty)
+}
+
+func adminLinksGet(rctx context.Context, ac *admin.Client, out io.Writer, o *opts, rest []string) error {
+	if len(rest) != 1 {
+		return usageErr("admin links get: expected <name>")
+	}
+	l, err := ac.GetLink(rctx, rest[0])
+	if err != nil {
+		return fromGRPC(err)
+	}
+	return writeJSON(out, encode.LinkSpec(l), o.pretty)
+}
+
+func adminLinksInfo(rctx context.Context, ac *admin.Client, out io.Writer, o *opts, rest []string) error {
+	if len(rest) != 1 {
+		return usageErr("admin links info: expected <name>")
+	}
+	l, err := ac.LinkInfo(rctx, rest[0])
+	if err != nil {
+		return fromGRPC(err)
+	}
+	return writeJSON(out, encode.LinkRuntime(l), o.pretty)
+}
+
+// adminLinksAct runs a subcommand that takes one link name and reports that it
+// happened, under the word the subcommand earns.
+func adminLinksAct(rctx context.Context, ac *admin.Client, out io.Writer, o *opts,
+	sub string, rest []string, call func(context.Context, string) error, done string) error {
+	if len(rest) != 1 {
+		return usageErr("admin links %s: expected <name>", sub)
+	}
+	if err := call(rctx, rest[0]); err != nil {
+		return fromGRPC(err)
+	}
+	return writeJSON(out, map[string]any{done: true}, o.pretty)
 }
 
 func adminLinkCreate(rctx context.Context, ac *admin.Client, o *opts, args []string, out io.Writer) error {

@@ -41,17 +41,24 @@ func main() {
 	}
 	defer c.Close()
 
-	s := c.Streams(*store)
 	subs := c.Subscriptions(*store)
+	if err := runDemo(ctx, c.Streams(*store), subs, *stream, *name); err != nil {
+		log.Fatalf("%v", err)
+	}
+}
 
+// runDemo is the walk: subscribe, publish three events, receive and ack them,
+// then read the lag, list, and remove the subscription. Subscribe comes first
+// and Create is never called (see the note at the top of the file).
+func runDemo(ctx context.Context, s *streams.Client, subs *subscriptions.Client, stream, name string) error {
 	spec := subscriptions.Spec{
 		Type:     subscriptions.TypeStream,
-		Selector: *stream,
-		Name:     *name,
+		Selector: stream,
+		Name:     name,
 		PoolSize: 1,
 	}
 
-	fmt.Printf("=== subscribe (stream=%q, name=%q) ===\n", *stream, *name)
+	fmt.Printf("=== subscribe (stream=%q, name=%q) ===\n", stream, name)
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 	deliveries, errs := subs.Subscribe(subCtx, spec)
@@ -59,60 +66,90 @@ func main() {
 	// Let the subscribe RPC register on the server side.
 	time.Sleep(500 * time.Millisecond)
 
+	if err := appendThree(ctx, s, stream); err != nil {
+		return err
+	}
+	if err := receiveAll(ctx, subs, deliveries, errs, name, subCancel, 3); err != nil {
+		return err
+	}
+	<-errs // drain
+	if err := reportLag(ctx, subs, name); err != nil {
+		return err
+	}
+	if err := listSubscriptions(ctx, subs); err != nil {
+		return err
+	}
+	return removeSubscription(ctx, subs, spec)
+}
+
+func appendThree(ctx context.Context, s *streams.Client, stream string) error {
 	fmt.Printf("=== append 3 events ===\n")
-	_, err = s.Append(ctx, *stream, streams.AnyVersion, []streams.ProposedEvent{
+	_, err := s.Append(ctx, stream, streams.AnyVersion, []streams.ProposedEvent{
 		{EventType: "sub_demo_v1", Data: []byte(`{"n":1}`)},
 		{EventType: "sub_demo_v1", Data: []byte(`{"n":2}`)},
 		{EventType: "sub_demo_v1", Data: []byte(`{"n":3}`)},
 	})
 	if err != nil {
-		log.Fatalf("append: %v", err)
+		return fmt.Errorf("append: %w", err)
 	}
+	return nil
+}
 
-	fmt.Printf("=== receive 3 deliveries ===\n")
+// receiveAll acks deliveries until want have arrived, the channel closes, or the
+// ten-second deadline passes without them.
+func receiveAll(ctx context.Context, subs *subscriptions.Client, deliveries <-chan subscriptions.Delivery,
+	errs <-chan error, name string, subCancel context.CancelFunc, want int) error {
+	fmt.Printf("=== receive %d deliveries ===\n", want)
 	received := 0
 	deadline := time.NewTimer(10 * time.Second)
 	defer deadline.Stop()
-loop:
 	for {
 		select {
 		case d, ok := <-deliveries:
 			if !ok {
-				break loop
+				return nil
 			}
 			fmt.Printf("  v=%-3d %-16s %-12s ckpt=%d\n",
 				d.Event.Version, d.Event.EventType, string(d.Event.Data), d.Checkpoint)
-			if err := subs.Ack(ctx, d.Event.StreamID, *name, d.Event.Version); err != nil {
-				log.Fatalf("ack: %v", err)
+			if err := subs.Ack(ctx, d.Event.StreamID, name, d.Event.Version); err != nil {
+				return fmt.Errorf("ack: %w", err)
 			}
 			received++
-			if received >= 3 {
+			if received >= want {
 				subCancel()
-				break loop
+				return nil
 			}
 		case <-deadline.C:
-			log.Fatalf("timed out after %d deliveries", received)
+			return fmt.Errorf("timed out after %d deliveries", received)
 		}
 	}
-	<-errs // drain
+}
 
+func reportLag(ctx context.Context, subs *subscriptions.Client, name string) error {
 	fmt.Printf("=== lag after acks ===\n")
-	lag, err := subs.Lag(ctx, *name)
+	lag, err := subs.Lag(ctx, name)
 	if err != nil {
-		log.Fatalf("lag: %v", err)
+		return fmt.Errorf("lag: %w", err)
 	}
 	fmt.Printf("  lag=%d checkpoint=%d latest=%d\n", lag.Lag, lag.CurrentCheckpoint, lag.LatestVersion)
+	return nil
+}
 
+func listSubscriptions(ctx context.Context, subs *subscriptions.Client) error {
 	fmt.Printf("=== list subscriptions (count only) ===\n")
 	all, err := subs.List(ctx)
 	if err != nil {
-		log.Fatalf("list: %v", err)
+		return fmt.Errorf("list: %w", err)
 	}
 	fmt.Printf("  %d subscription(s) total\n", len(all))
+	return nil
+}
 
+func removeSubscription(ctx context.Context, subs *subscriptions.Client, spec subscriptions.Spec) error {
 	fmt.Printf("=== remove subscription ===\n")
 	if err := subs.Remove(ctx, spec); err != nil {
-		log.Fatalf("remove: %v", err)
+		return fmt.Errorf("remove: %w", err)
 	}
 	fmt.Printf("  removed\n")
+	return nil
 }

@@ -27,13 +27,41 @@ func main() {
 		return
 	}
 	defer c.Close()
-	subs := c.Subscriptions("default_store")
+	runProbes(ctx, c.Subscriptions("default_store"))
+}
 
-	cases := []struct {
-		label string
-		spec  subscriptions.Spec
-		want  string
-	}{
+// probe is one subscription to attempt and the answer it should get.
+type probe struct {
+	label string
+	spec  subscriptions.Spec
+	want  string
+}
+
+// runProbes asks the gateway every case and prints what came back, marking the
+// ones whose answer was not the one the case expects.
+func runProbes(ctx context.Context, subs *subscriptions.Client) {
+	for _, tc := range probeCases() {
+		start := time.Now()
+		_, err := subs.Create(ctx, tc.spec)
+		dur := time.Since(start)
+		got := "ok"
+		if err != nil {
+			got = "reject: " + err.Error()
+			if len(got) > 70 {
+				got = got[:70] + "…"
+			}
+		}
+		flag := "✓"
+		if (tc.want == "ok") != (err == nil) {
+			flag = "✗"
+		}
+		fmt.Printf("%s %-32s %-12s %s\n", flag, tc.label, dur.Round(time.Millisecond), got)
+	}
+}
+
+// probeCases is the table the probe runs.
+func probeCases() []probe {
+	return []probe{
 		{
 			label: "valid stream selector",
 			spec: subscriptions.Spec{
@@ -64,23 +92,5 @@ func main() {
 			},
 			want: "ok",
 		},
-	}
-
-	for _, tc := range cases {
-		start := time.Now()
-		_, err := subs.Create(ctx, tc.spec)
-		dur := time.Since(start)
-		got := "ok"
-		if err != nil {
-			got = "reject: " + err.Error()
-			if len(got) > 70 {
-				got = got[:70] + "…"
-			}
-		}
-		flag := "✓"
-		if (tc.want == "ok") != (err == nil) {
-			flag = "✗"
-		}
-		fmt.Printf("%s %-32s %-12s %s\n", flag, tc.label, dur.Round(time.Millisecond), got)
 	}
 }

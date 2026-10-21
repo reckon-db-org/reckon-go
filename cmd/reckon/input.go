@@ -92,35 +92,48 @@ func readProposedEvents(r io.Reader) ([]streams.ProposedEvent, error) {
 	if err != nil {
 		return nil, err
 	}
-	trimmed := strings.TrimSpace(string(raw))
+	inputs, err := parseProposedInputs(strings.TrimSpace(string(raw)))
+	if err != nil {
+		return nil, err
+	}
+	return toProposedEvents(inputs)
+}
+
+// parseProposedInputs takes the whole input, an array when it starts with one
+// and one JSON object per line otherwise.
+func parseProposedInputs(trimmed string) ([]proposedInput, error) {
 	if trimmed == "" {
 		return nil, fmt.Errorf("no input")
 	}
-
-	var inputs []proposedInput
 	if strings.HasPrefix(trimmed, "[") {
-		if err := json.Unmarshal([]byte(trimmed), &inputs); err != nil {
-			return nil, err
-		}
-	} else {
-		sc := bufio.NewScanner(strings.NewReader(trimmed))
-		sc.Buffer(make([]byte, 0, 64*1024), 16*1024*1024)
-		for sc.Scan() {
-			line := strings.TrimSpace(sc.Text())
-			if line == "" {
-				continue
-			}
-			var pi proposedInput
-			if err := json.Unmarshal([]byte(line), &pi); err != nil {
-				return nil, err
-			}
-			inputs = append(inputs, pi)
-		}
-		if err := sc.Err(); err != nil {
-			return nil, err
-		}
+		var inputs []proposedInput
+		return inputs, json.Unmarshal([]byte(trimmed), &inputs)
 	}
+	return scanProposedInputs(trimmed)
+}
 
+// scanProposedInputs reads NDJSON: blank lines are skipped, a malformed line
+// fails the whole read rather than being dropped.
+func scanProposedInputs(trimmed string) ([]proposedInput, error) {
+	var inputs []proposedInput
+	sc := bufio.NewScanner(strings.NewReader(trimmed))
+	sc.Buffer(make([]byte, 0, 64*1024), 16*1024*1024)
+	for sc.Scan() {
+		line := strings.TrimSpace(sc.Text())
+		if line == "" {
+			continue
+		}
+		var pi proposedInput
+		if err := json.Unmarshal([]byte(line), &pi); err != nil {
+			return nil, err
+		}
+		inputs = append(inputs, pi)
+	}
+	return inputs, sc.Err()
+}
+
+// toProposedEvents resolves each input's bytes and gives every event an id.
+func toProposedEvents(inputs []proposedInput) ([]streams.ProposedEvent, error) {
 	out := make([]streams.ProposedEvent, 0, len(inputs))
 	for i, pi := range inputs {
 		data, err := resolveInputBytes(pi.Data, pi.DataB64)
