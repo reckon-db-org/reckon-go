@@ -297,6 +297,14 @@ reckon-go is the Go client for the Reckon event-sourcing ecosystem:
 - **[evoq](https://github.com/reckon-db-org/evoq)** + **[reckon-evoq](https://github.com/reckon-db-org/reckon-evoq)**: the CQRS framework and its Reckon-store adapter (server side).
 - **reckon-portal**: docs and landing site ([reckon-internal/reckon-portal](https://github.com/reckon-db-org/reckon-portal)).
 
+## Architecture
+
+The C4 model — who uses the module, what it reaches, and what it is made of — is
+in [architecture/README.md](architecture/README.md), with its diagrams in
+[assets/](assets/):
+
+![reckon-go system context](assets/c4-context.svg)
+
 ## License
 
 Apache-2.0.

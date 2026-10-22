@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1050" role="img" aria-label="reckon-go components">
+<title>reckon-go components</title>
+<style>
+.t-name { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; }
+.t-desc { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12.5px; }
+.t-rel { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 11.5px; paint-order: stroke; stroke-width: 4px; stroke-linejoin: round; }
+.t-code { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+.t-type { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; }
+.t-bound { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12px; font-weight: 600; }
+.t-leg { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12px; }
+.edge { fill: none; stroke-width: 1.25; }
+.edge-later { fill: none; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bg { fill: #FFFFFF; }
+.b-sys { fill: #F5E9CC; stroke: #A56F0A; stroke-width: 2; }
+.b-per { fill: #E3EBF2; stroke: #3B5B7A; stroke-width: 1.25; }
+.b-mac { fill: #E6E4EE; stroke: #5E5A78; stroke-width: 1.25; }
+.b-ext { fill: #ECEFED; stroke: #8A9791; stroke-width: 1.25; }
+.b-cmp { fill: #FFFFFF; stroke: #8A9791; stroke-width: 1.25; }
+.b-later { fill: none; stroke: #8A9791; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bound { fill: none; stroke: #B3BDB8; stroke-width: 1; }
+.head { fill: #3B5B7A; }
+.t-name, .t-code { fill: #16201D; }
+.t-type, .t-bound, .t-leg { fill: #66736E; }
+.t-desc { fill: #34413C; }
+.t-rel { fill: #66736E; stroke: #FFFFFF; }
+.edge, .edge-later { stroke: #8A9791; }
+.arrowhead { fill: #8A9791; }
+@media (prefers-color-scheme: dark) {
+.bg { fill: #171F1C; }
+.b-sys { fill: #3A2E13; stroke: #E3AA3C; }
+.b-per { fill: #1D2A36; stroke: #8EB4D8; }
+.b-mac { fill: #26243A; stroke: #A9A4C8; }
+.b-ext { fill: #1C2421; stroke: #7D8B85; }
+.b-cmp { fill: #171F1C; stroke: #7D8B85; }
+.b-later { stroke: #7D8B85; }
+.bound { stroke: #4A5752; }
+.head { fill: #8EB4D8; }
+.t-name, .t-code { fill: #E6ECE9; }
+.t-type, .t-bound, .t-leg { fill: #93A09A; }
+.t-desc { fill: #C3CDC8; }
+.t-rel { fill: #93A09A; stroke: #171F1C; }
+.edge, .edge-later { stroke: #7D8B85; }
+.arrowhead { fill: #7D8B85; }
+}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0 0L10 5L0 10z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1000" height="1050"/>
+<rect class="bound" x="16" y="40" width="968" height="794" rx="12"/>
+<text class="t-bound" x="32" y="62">reckon-go module [Container: a Go library and the reckon CLI]</text>
+<rect class="b-cmp" x="32" y="70" width="452" height="138" rx="10"/>
+<text class="t-code" x="48" y="98">client.go: the facade</text>
+<text class="t-type" x="48" y="116">[reckon.Client, one grpc.ClientConn]</text>
+<text class="t-desc" x="48" y="140">Connect rewrites a bare host:port to</text>
+<text class="t-desc" x="48" y="156">passthrough:/// so no DNS SRV lookup</text>
+<text class="t-desc" x="48" y="172">runs; Insecure, TLSWithCA and</text>
+<text class="t-desc" x="48" y="188">TLSWithServerName set the transport.</text>
+<rect class="b-cmp" x="516" y="70" width="452" height="138" rx="10"/>
+<text class="t-code" x="532" y="98">cmd/reckon: the CLI</text>
+<text class="t-type" x="532" y="116">[route.go, cmd_*.go, encode/]</text>
+<text class="t-desc" x="532" y="140">One group per service, JSON out and</text>
+<text class="t-desc" x="532" y="156">NDJSON for streams; global flags for</text>
+<text class="t-desc" x="532" y="172">endpoint, store, timeout, bytes and</text>
+<text class="t-desc" x="532" y="188">transport, and an exit code per failure.</text>
+<rect class="b-cmp" x="32" y="268" width="210" height="154" rx="10"/>
+<text class="t-code" x="48" y="296">streams</text>
+<text class="t-type" x="48" y="314">[plus lineage]</text>
+<text class="t-desc" x="48" y="338">Append with optimistic</text>
+<text class="t-desc" x="48" y="354">concurrency, forward and</text>
+<text class="t-desc" x="48" y="370">backward reads, indexed</text>
+<text class="t-desc" x="48" y="386">reads, and cause and</text>
+<text class="t-desc" x="48" y="402">correlation traversal</text>
+<rect class="b-cmp" x="274" y="268" width="210" height="138" rx="10"/>
+<text class="t-code" x="290" y="296">subscriptions</text>
+<text class="t-type" x="290" y="314">[specs, delivery, ack]</text>
+<text class="t-desc" x="290" y="338">Persistent specs, stream</text>
+<text class="t-desc" x="290" y="354">and pattern filters, a</text>
+<text class="t-desc" x="290" y="370">delivery channel, and</text>
+<text class="t-desc" x="290" y="386">checkpoint, lag and ack</text>
+<rect class="b-cmp" x="516" y="268" width="210" height="138" rx="10"/>
+<text class="t-code" x="532" y="296">snapshots</text>
+<text class="t-type" x="532" y="314">[Spec, Record]</text>
+<text class="t-desc" x="532" y="338">Save, read at a version,</text>
+<text class="t-desc" x="532" y="354">latest, delete and list,</text>
+<text class="t-desc" x="532" y="370">per source, stream and</text>
+<text class="t-desc" x="532" y="386">version</text>
+<rect class="b-cmp" x="758" y="268" width="210" height="138" rx="10"/>
+<text class="t-code" x="774" y="296">schema</text>
+<text class="t-type" x="774" y="314">[Definition]</text>
+<text class="t-desc" x="774" y="338">Register, unregister,</text>
+<text class="t-desc" x="774" y="354">get and list event</text>
+<text class="t-desc" x="774" y="370">schemas, with versions</text>
+<text class="t-desc" x="774" y="386">and upcasting</text>
+<rect class="b-cmp" x="32" y="482" width="210" height="122" rx="10"/>
+<text class="t-code" x="48" y="510">temporal</text>
+<text class="t-type" x="48" y="528">[ReadUntil, ReadRange]</text>
+<text class="t-desc" x="48" y="552">Wall-clock and</text>
+<text class="t-desc" x="48" y="568">time-travel reads that</text>
+<text class="t-desc" x="48" y="584">answer streams records</text>
+<rect class="b-cmp" x="274" y="482" width="210" height="138" rx="10"/>
+<text class="t-code" x="290" y="510">admin</text>
+<text class="t-type" x="290" y="528">[stats, scavenge, links]</text>
+<text class="t-desc" x="290" y="552">Store stats, stream</text>
+<text class="t-desc" x="290" y="568">info, scavenge (dry run</text>
+<text class="t-desc" x="290" y="584">and matching), projection</text>
+<text class="t-desc" x="290" y="600">links, catalogue reload</text>
+<rect class="b-cmp" x="516" y="482" width="210" height="138" rx="10"/>
+<text class="t-code" x="532" y="510">health</text>
+<text class="t-type" x="532" y="528">[checks and diagnostics]</text>
+<text class="t-desc" x="532" y="552">Store check, cluster</text>
+<text class="t-desc" x="532" y="568">consistency, membership,</text>
+<text class="t-desc" x="532" y="584">Raft log, memory level</text>
+<text class="t-desc" x="532" y="600">and server info</text>
+<rect class="b-cmp" x="758" y="482" width="210" height="138" rx="10"/>
+<text class="t-code" x="774" y="510">stores</text>
+<text class="t-type" x="774" y="528">[topology discovery]</text>
+<text class="t-desc" x="774" y="552">List, get and watch the</text>
+<text class="t-desc" x="774" y="568">gateway's stores and</text>
+<text class="t-desc" x="774" y="584">their topology; the only</text>
+<text class="t-desc" x="774" y="600">store-free sub-client</text>
+<rect class="b-cmp" x="32" y="680" width="210" height="138" rx="10"/>
+<text class="t-code" x="48" y="708">dcb</text>
+<text class="t-type" x="48" y="726">[dcb.go, ccc.go]</text>
+<text class="t-desc" x="48" y="750">Append if no tag matches,</text>
+<text class="t-desc" x="48" y="766">read a DCB context, and</text>
+<text class="t-desc" x="48" y="782">the CCC payload reads</text>
+<text class="t-desc" x="48" y="798">that need store indexes</text>
+<rect class="b-cmp" x="274" y="680" width="452" height="106" rx="10"/>
+<text class="t-code" x="290" y="708">genproto/gatewayv1: the wire contract</text>
+<text class="t-type" x="290" y="726">[generated by buf from reckon-proto]</text>
+<text class="t-desc" x="290" y="750">Stubs for the nine services of proto package reckon.gateway.v1. Committed, never</text>
+<text class="t-desc" x="290" y="766">regenerated at build time, and the only thing any sub-client talks to.</text>
+<rect class="b-ext" x="32" y="880" width="304" height="106" rx="10"/>
+<text class="t-name" x="48" y="908">reckon-gateway</text>
+<text class="t-type" x="48" y="926">[External endpoint]</text>
+<text class="t-desc" x="48" y="950">Answers the nine services</text>
+<text class="t-desc" x="48" y="966">over gRPC, TLS by default</text>
+<path class="edge" d="M258 208V268" marker-end="url(#a)"/>
+<text class="t-rel" x="266" y="244">builds</text>
+<path class="edge" d="M500 208V268" marker-end="url(#a)"/>
+<text class="t-rel" x="508" y="244">builds</text>
+<path class="edge" d="M742 208V268" marker-end="url(#a)"/>
+<text class="t-rel" x="750" y="244">builds</text>
+<path class="edge" d="M863 208V268" marker-end="url(#a)"/>
+<text class="t-rel" x="871" y="244">builds</text>
+<path class="edge" d="M516 120H484" marker-end="url(#a)"/>
+<text class="t-rel" x="480" y="112" text-anchor="end">imports</text>
+<path class="edge" d="M137 620V650H863V620"/>
+<path class="edge" d="M379 620V650"/>
+<path class="edge" d="M621 620V650"/>
+<path class="edge" d="M500 650V680" marker-end="url(#a)"/>
+<text class="t-rel" x="508" y="672">through the stubs</text>
+<path class="edge" d="M242 750H274" marker-end="url(#a)"/>
+<text class="t-rel" x="258" y="742" text-anchor="middle">uses</text>
+<path class="edge" d="M500 786V880" marker-end="url(#a)"/>
+<text class="t-rel" x="508" y="840">grpc-go over TLS</text>
+<rect class="b-sys" x="24" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="54" y="1022">In scope</text>
+<rect class="b-per" x="119.2" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="149.2" y="1022">Person</text>
+<rect class="b-mac" x="200.60000000000002" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="230.60000000000002" y="1022">Platform it runs on</text>
+<rect class="b-ext" x="371.70000000000005" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="401.70000000000005" y="1022">External system</text>
+<rect class="b-cmp" x="515.2" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="545.2" y="1022">Component</text>
+<rect class="bound" x="617.3000000000001" y="1010" width="22" height="14" rx="3"/>
+<text class="t-leg" x="647.3000000000001" y="1022">Boundary</text>
+</svg>
