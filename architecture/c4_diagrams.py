@@ -132,8 +132,8 @@ def context():
           ["Imports the module and calls", "one sub-client per service,", "with TLS on by default"], person=True)
     d.box("b-per", 375, 30, 250, "Shell or CI user", "[Person]",
           ["Runs the reckon binary: JSON", "out, NDJSON for streams, and", "an exit code per failure"], person=True)
-    d.box("b-per", 720, 30, 250, "Editor integration", "[Person: reckon-nvim]",
-          ["Drives the binary and reads", "its JSON, so the editor never", "speaks gRPC itself"], person=True)
+    d.box("b-ext", 720, 30, 250, "reckon-nvim", "[External: a Lua editor plugin]",
+          ["Drives the reckon binary over", "its own job control and reads", "its JSON; never gRPC itself"])
     d.box("b-ext", 30, 210, 250, "Go application", "[External: the caller's program]",
           ["Links the SDK in process:", "no sidecar and no daemon,", "one Client per endpoint"])
     d.box("b-sys", 375, 210, 250, "reckon-go", "[In scope: one Go module, v0.10.0]",

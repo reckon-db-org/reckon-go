@@ -59,13 +59,12 @@
 <text class="t-desc" x="391" y="100">Runs the reckon binary: JSON</text>
 <text class="t-desc" x="391" y="116">out, NDJSON for streams, and</text>
 <text class="t-desc" x="391" y="132">an exit code per failure</text>
-<rect class="b-per" x="720" y="30" width="250" height="122" rx="10"/>
-<circle class="head" cx="746" cy="54" r="9"/>
-<text class="t-name" x="764" y="58">Editor integration</text>
-<text class="t-type" x="764" y="76">[Person: reckon-nvim]</text>
-<text class="t-desc" x="736" y="100">Drives the binary and reads</text>
-<text class="t-desc" x="736" y="116">its JSON, so the editor never</text>
-<text class="t-desc" x="736" y="132">speaks gRPC itself</text>
+<rect class="b-ext" x="720" y="30" width="250" height="122" rx="10"/>
+<text class="t-name" x="736" y="58">reckon-nvim</text>
+<text class="t-type" x="736" y="76">[External: a Lua editor plugin]</text>
+<text class="t-desc" x="736" y="100">Drives the reckon binary over</text>
+<text class="t-desc" x="736" y="116">its own job control and reads</text>
+<text class="t-desc" x="736" y="132">its JSON; never gRPC itself</text>
 <rect class="b-ext" x="30" y="210" width="250" height="122" rx="10"/>
 <text class="t-name" x="46" y="238">Go application</text>
 <text class="t-type" x="46" y="256">[External: the caller's program]</text>

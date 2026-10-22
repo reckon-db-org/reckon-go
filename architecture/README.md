@@ -21,7 +21,7 @@ and a diagram that still names a package the module lost is drift.
 | **reckon-go** | One Go module (v0.10.0): an SDK with nine service sub-clients behind one facade, and the `reckon` CLI | The system this repository builds |
 | Go application developer | Person | Imports the module and calls one sub-client per service |
 | Shell or CI user | Person | Runs the `reckon` binary: JSON out, NDJSON for streams, an exit code per failure |
-| Editor integration | Person, `reckon-nvim` | Drives the binary and reads its JSON, so the editor never speaks gRPC itself |
+| reckon-nvim | External system, a Lua editor plugin | Drives the `reckon` binary over its own job control and reads its JSON, so the editor never speaks gRPC itself |
 | Go application | External | Links the SDK in process: no sidecar, no daemon, one `Client` per endpoint |
 | reckon-gateway | External | Answers `reckon.gateway.v1`: Stores, Stream, Subscription, Snapshot, Schema, Temporal, Admin, Health and DCB |
 | reckon-proto | External | The wire contract; the stubs in `genproto/` are generated from it and committed |
