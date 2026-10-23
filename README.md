@@ -264,8 +264,8 @@ go install github.com/reckon-db-org/reckon-go/cmd/reckon@latest
 
 ```bash
 reckon --version
-reckon -e localhost:50051 -s my_store streams read user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e --count 10
-reckon -e localhost:50051 -s my_store streams watch user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e   # NDJSON
+reckon -e localhost:50051 --plaintext -s my_store streams read user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e --count 10
+reckon -e localhost:50051 --plaintext -s my_store streams watch user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e   # NDJSON
 ```
 
 Release binaries (`linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,
