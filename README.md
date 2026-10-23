@@ -91,11 +91,17 @@ func main() {
     }
     defer c.Close()
 
-    s := c.Streams("default_store")
+    // my_store is the store reckon-gateway's own quick start creates; use the
+    // store id your gateway serves.
+    s := c.Streams("my_store")
+
+    // A stream id is <prefix>-<32 hex>; the store refuses any other shape.
+    // The rule and how to make one: https://hexdocs.pm/reckon_gater/stream_ids.html
+    const userID = "user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e"
 
     // Append with no concurrency check. Use streams.NoStream to assert the
     // stream is new, or a non-negative version for an exact optimistic check.
-    res, err := s.Append(ctx, "users-42", streams.AnyVersion, []streams.ProposedEvent{
+    res, err := s.Append(ctx, userID, streams.AnyVersion, []streams.ProposedEvent{
         {EventType: "user_registered_v1", Data: []byte(`{"name":"Ada"}`)},
         {EventType: "user_promoted_v1", Data: []byte(`{"role":"admin"}`)},
     })
@@ -106,7 +112,7 @@ func main() {
         res.Version, res.Position, res.Count)
 
     // Read forward from version 0, up to 100 events.
-    events, err := s.Read(ctx, "users-42", 0, 100)
+    events, err := s.Read(ctx, userID, 0, 100)
     if err != nil {
         log.Fatalf("read: %v", err)
     }
@@ -258,8 +264,8 @@ go install github.com/reckon-db-org/reckon-go/cmd/reckon@latest
 
 ```bash
 reckon --version
-reckon -e localhost:50051 -s default_store streams read user-123 --count 10
-reckon -e localhost:50051 -s default_store streams watch user-123   # NDJSON
+reckon -e localhost:50051 -s my_store streams read user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e --count 10
+reckon -e localhost:50051 -s my_store streams watch user-7c4b9f1e2a8d4c3b9f7e5d1a2b3c4d5e   # NDJSON
 ```
 
 Release binaries (`linux/{amd64,arm64}`, `darwin/{amd64,arm64}`,
