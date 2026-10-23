@@ -63,7 +63,7 @@ binary or `go install`).
 
 ## Quick start: connect, append, read
 
-A full round-trip against a lab gateway (plaintext): append three events to a
+A full round-trip against a local gateway (plaintext): append two events to a
 stream, then read them back forward from version 0.
 
 ```go
